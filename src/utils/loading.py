@@ -15,7 +15,9 @@ def load_skeleton(path: str) -> Skeleton:
 
     bones = list()
 
+    origin = model["origin"]
+
     for bone in model["segments"]:
-        bones.append(Bone(bone["a"][0], bone["a"][1], bone["length"], bone["angle"]))
+        bones.append(Bone(bone["a"][0] + origin[0], bone["a"][1] + origin[1], bone["length"], bone["angle"]))
 
     return bones
