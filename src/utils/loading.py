@@ -13,11 +13,19 @@ def load_skeleton(path: str) -> Skeleton:
 
     model = loads(data)
 
-    bones = list()
-
     origin = model["origin"]
 
-    for bone in model["segments"]:
-        bones.append(Bone(bone["a"][0] + origin[0], bone["a"][1] + origin[1], bone["length"], bone["angle"]))
+    skeleton = Skeleton()
 
-    return bones
+    for bone in model["segments"]:
+        skeleton.add(Bone(bone["a"][0] + origin[0], bone["a"][1] + origin[1], bone["length"], bone["angle"]))
+
+    for i in range(len(model["segments"])):
+        if model["segments"][i]["links"][0]:
+            index = int(model["segments"][i]["links"][0].split(".")[0])
+
+            skeleton.newLimb(str(index))
+            skeleton.getLimb(str(index)).add(skeleton.getBone(str(index)))
+            skeleton.getLimb(str(index)).add(skeleton.getBone(str(i)))
+
+    return skeleton

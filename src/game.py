@@ -8,8 +8,7 @@ class Game:
         self.root = root
         self.events = events
 
-
-        self.bones = load_skeleton("skeleton.json")
+        self.skeleton = load_skeleton("skeleton.json")
 
 
     def update_display(self):
@@ -17,8 +16,7 @@ class Game:
         self.root.fill("white")
 
 
-        for bone in self.bones:
-            bone.blit(self.root.canvas)
+        self.skeleton.blit(self.root.canvas)
 
 
         self.root.update()
