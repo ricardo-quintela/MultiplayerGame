@@ -1,4 +1,4 @@
-from math import sin, cos, radians, atan2
+from math import sin, cos, radians
 
 from pygame import Vector2
 from pygame import Surface
@@ -28,17 +28,16 @@ class Bone:
         # calculate b
         self.b = Vector2(0, 0)
 
+        self.calculate_b()
+
         # joint
         self.isBound = False
         self.joint = None
 
 
 
-    def calculate_b(self) -> Vector2:
+    def calculate_b(self):
         """Calculates the B point of the bone based on the length and the angle
-
-        Returns:
-            Vector2: the cartesian coordinates of point b
         """
 
         self.b.update(self.a + Vector2(self.length * cos(radians(self.angle)), self.length * sin(radians(self.angle))))
@@ -68,41 +67,21 @@ class Bone:
         self.joint = target
 
 
-    def follow(self, target: tuple):
-        """Makes the bone align and follow a given target
+
+    def setRotation(self, angle: int):
+        """Set the rotation of the bone
 
         Args:
-            target (tuple): the position of the target
+            angle (int): the angle of the bone
         """
+        self.angle = angle
         
-        # create a vector 2 to ease calculations
-
-        # calculate the direction of the vector
-        direction = target - self.a
-
-        # calculate the angle based on the direction
-        self.angle = point_O.angle_to(direction)
-
-        # set the magnitude of the direction vector to the length of this vector and invert it
-        if direction.length() > 0:
-            direction.scale_to_length(self.length)
-            direction *= -1
-
-        # set A to the coordinates of the target - length
-        self.a.update(target + direction)
-        
-
-
 
     def update(self):
         """Updates the bone position
         """
 
         self.calculate_b()
-
-        # follow its bound joint
-        if self.isBound:
-            self.follow(self.joint)
 
 
     def blit(self, canvas: Surface):
@@ -112,4 +91,4 @@ class Bone:
             canvas (Surface): the Surface where to draw the bone
         """
 
-        line(canvas, "black", self.a, self.b, 3)
+        line(canvas, "red", self.a, self.b, 3)
