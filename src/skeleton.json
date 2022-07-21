@@ -18,7 +18,7 @@
             "angle": 98.13010235415598,
             "length": 70.71067811865476,
             "links": [
-                1,
+                "coxa_e",
                 null
             ],
             "isAnchor": false
@@ -62,17 +62,17 @@
         {
             "name": "perna_d",
             "a": [
-                29.0,
+                30.0,
                 -70.0
             ],
             "b": [
-                39.0,
+                40.0,
                 0.0
             ],
             "angle": 81.86989764584403,
             "length": 70.71067811865476,
             "links": [
-                2,
+                "coxa_d",
                 null
             ],
             "isAnchor": false
@@ -162,7 +162,7 @@
             "angle": 101.30993247402021,
             "length": 50.99019513592785,
             "links": [
-                5,
+                "antebraco_e",
                 null
             ],
             "isAnchor": false
@@ -180,7 +180,7 @@
             "angle": 78.69006752597979,
             "length": 50.99019513592785,
             "links": [
-                6,
+                "antebraco_d",
                 null
             ],
             "isAnchor": false

@@ -18,16 +18,19 @@ def load_skeleton(path: str) -> Skeleton:
     skeleton = Skeleton()
 
     for bone in model["segments"]:
-        skeleton.add(Bone(bone["a"][0] + origin[0], bone["a"][1] + origin[1], bone["length"], bone["angle"]))
+        skeleton.add(Bone(bone["a"][0] + origin[0], bone["a"][1] + origin[1], bone["length"], bone["angle"], bone["name"]))
 
     for i in range(len(model["segments"])):
         if model["segments"][i]["links"][0]:
-            index = model["segments"][i]["links"][0]
 
+            parent = model["segments"][i]["links"][0]
+            name = model["segments"][i]["name"]
 
-            skeleton.newLimb(str(index))
-            skeleton.getLimb(str(index)).add(skeleton.getBone(str(index)))
-            skeleton.getLimb(str(index)).add(skeleton.getBone(str(i)))
+            print(name, parent)
+
+            skeleton.newLimb(parent)
+            skeleton.getLimb(parent).add(skeleton.getBone(parent))
+            skeleton.getLimb(parent).add(skeleton.getBone(name))
 
     for i in range(len(model["segments"])):
             
@@ -42,9 +45,9 @@ def load_skeleton(path: str) -> Skeleton:
                 point = bone.b
 
             try:
-                skeleton.getLimb(str(i)).fixate(point)
+                skeleton.getLimb(model["segments"][i]["links"][0]).fixate(point)
             except KeyError:
-                skeleton.getBone(str(i)).fixate(point)
+                skeleton.getBone(model["segments"][i]["links"][0]).fixate(point)
 
 
     return skeleton
