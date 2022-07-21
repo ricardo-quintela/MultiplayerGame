@@ -1,0 +1,189 @@
+{
+    "name": "untitled",
+    "origin": [
+        300,
+        400
+    ],
+    "segments": [
+        {
+            "name": "perna_e",
+            "a": [
+                -30.0,
+                -70.0
+            ],
+            "b": [
+                -40.0,
+                0.0
+            ],
+            "angle": 98.13010235415598,
+            "length": 70.71067811865476,
+            "links": [
+                "coxa_e",
+                null
+            ],
+            "isAnchor": false
+        },
+        {
+            "name": "coxa_e",
+            "a": [
+                0.0,
+                -100.0
+            ],
+            "b": [
+                -30.0,
+                -70.0
+            ],
+            "angle": 135.0,
+            "length": 42.42640687119285,
+            "links": [
+                null,
+                "tronco.b"
+            ],
+            "isAnchor": false
+        },
+        {
+            "name": "coxa_d",
+            "a": [
+                0.0,
+                -100.0
+            ],
+            "b": [
+                30.0,
+                -70.0
+            ],
+            "angle": 45.0,
+            "length": 42.42640687119285,
+            "links": [
+                null,
+                "tronco.b"
+            ],
+            "isAnchor": false
+        },
+        {
+            "name": "perna_d",
+            "a": [
+                30.0,
+                -70.0
+            ],
+            "b": [
+                40.0,
+                0.0
+            ],
+            "angle": 81.86989764584403,
+            "length": 70.71067811865476,
+            "links": [
+                "coxa_d",
+                null
+            ],
+            "isAnchor": false
+        },
+        {
+            "name": "tronco",
+            "a": [
+                0.0,
+                -200.0
+            ],
+            "b": [
+                0.0,
+                -100.0
+            ],
+            "angle": 90.0,
+            "length": 100.0,
+            "links": [
+                null,
+                null
+            ],
+            "isAnchor": true
+        },
+        {
+            "name": "antebraco_e",
+            "a": [
+                0.0,
+                -200.0
+            ],
+            "b": [
+                -40.0,
+                -150.0
+            ],
+            "angle": 128.6598082540901,
+            "length": 64.03124237432849,
+            "links": [
+                null,
+                "tronco.a"
+            ],
+            "isAnchor": false
+        },
+        {
+            "name": "antebraco_d",
+            "a": [
+                0.0,
+                -200.0
+            ],
+            "b": [
+                40.0,
+                -150.0
+            ],
+            "angle": 51.34019174590991,
+            "length": 64.03124237432849,
+            "links": [
+                null,
+                "tronco.a"
+            ],
+            "isAnchor": false
+        },
+        {
+            "name": "pescoco",
+            "a": [
+                0.0,
+                -200.0
+            ],
+            "b": [
+                0.0,
+                -230.0
+            ],
+            "angle": -90.0,
+            "length": 30.0,
+            "links": [
+                null,
+                "tronco.a"
+            ],
+            "isAnchor": false
+        },
+        {
+            "name": "braco_e",
+            "a": [
+                -40.0,
+                -150.0
+            ],
+            "b": [
+                -50.0,
+                -100.0
+            ],
+            "angle": 101.30993247402021,
+            "length": 50.99019513592785,
+            "links": [
+                "antebraco_e",
+                null
+            ],
+            "isAnchor": false
+        },
+        {
+            "name": "braco_d",
+            "a": [
+                40.0,
+                -150.0
+            ],
+            "b": [
+                50.0,
+                -100.0
+            ],
+            "angle": 78.69006752597979,
+            "length": 50.99019513592785,
+            "links": [
+                "antebraco_d",
+                null
+            ],
+            "isAnchor": false
+        }
+    ]
+}
