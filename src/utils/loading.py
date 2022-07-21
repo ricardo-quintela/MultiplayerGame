@@ -45,9 +45,9 @@ def load_skeleton(path: str) -> Skeleton:
                 point = bone.b
 
             try:
-                skeleton.getLimb(model["segments"][i]["links"][0]).fixate(point)
+                skeleton.getLimb(model["segments"][i]["name"]).fixate(point)
             except KeyError:
-                skeleton.getBone(model["segments"][i]["links"][0]).fixate(point)
+                skeleton.getBone(model["segments"][i]["name"]).fixate(point)
 
 
     return skeleton
