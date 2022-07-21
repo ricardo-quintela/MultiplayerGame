@@ -31,8 +31,8 @@ class Bone:
         self.calculate_b()
 
         # joint
-        self.isBound = False
-        self.joint = None
+        self.isAnchored = False
+        self.anchor = None
 
 
 
@@ -54,17 +54,17 @@ class Bone:
         self.a.update(pos)
 
 
-    def bind(self, target):
-        """Bind this bone to a joint\n\n
+    def fixate(self, target: object):
+        """Anchor this bone to a point\n\n
 
         The target point must be a mutable object
 
         Args:
-            target (list, Vector2): the point to bind the joint to
+            target (list, Vector2): the point to anchor the joint to
         """
-        self.isBound = True
+        self.isAnchored = True
 
-        self.joint = target
+        self.anchor = target
 
 
 
@@ -80,6 +80,9 @@ class Bone:
     def update(self):
         """Updates the bone position
         """
+
+        if self.isAnchored:
+            self.a.update(self.anchor)
 
         self.calculate_b()
 

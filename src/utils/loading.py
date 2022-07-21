@@ -1,6 +1,6 @@
 from json import loads
 
-from inverseKinematics import Skeleton, Bone, Limb
+from inverseKinematics import Skeleton, Bone
 
 def load_skeleton(path: str) -> Skeleton:
 
@@ -22,10 +22,29 @@ def load_skeleton(path: str) -> Skeleton:
 
     for i in range(len(model["segments"])):
         if model["segments"][i]["links"][0]:
-            index = int(model["segments"][i]["links"][0].split(".")[0])
+            index = model["segments"][i]["links"][0]
+
 
             skeleton.newLimb(str(index))
             skeleton.getLimb(str(index)).add(skeleton.getBone(str(index)))
             skeleton.getLimb(str(index)).add(skeleton.getBone(str(i)))
+
+    for i in range(len(model["segments"])):
+            
+        if model["segments"][i]["links"][1]:
+
+            anchor = model["segments"][i]["links"][1].split(".")
+
+            bone = skeleton.getBone(anchor[0])
+            if anchor[1] == "a":
+                point = bone.a
+            else:
+                point = bone.b
+
+            try:
+                skeleton.getLimb(str(i)).fixate(point)
+            except KeyError:
+                skeleton.getBone(str(i)).fixate(point)
+
 
     return skeleton

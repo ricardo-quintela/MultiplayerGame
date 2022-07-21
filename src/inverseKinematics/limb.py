@@ -55,6 +55,7 @@ class Limb:
         Args:
             anchor (list, Vector2): the point to anchor the limb
         """
+        print(anchor)
         self.anchor = anchor
 
 

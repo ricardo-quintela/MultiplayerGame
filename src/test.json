@@ -1,0 +1,60 @@
+{
+    "name": "untitled",
+    "origin": [
+        300,
+        300
+    ],
+    "segments": [
+        {
+            "a": [
+                0.0,
+                -200.0
+            ],
+            "b": [
+                0.0,
+                -100.0
+            ],
+            "angle": 90.0,
+            "length": 100.0,
+            "links": [
+                null,
+                null
+            ],
+            "isAnchor": true
+        },
+        {
+            "a": [
+                0.0,
+                -100.0
+            ],
+            "b": [
+                -100.0,
+                0.0
+            ],
+            "angle": 135.0,
+            "length": 141.4213562373095,
+            "links": [
+                null,
+                "0.b"
+            ],
+            "isAnchor": false
+        },
+        {
+            "a": [
+                0.0,
+                -100.0
+            ],
+            "b": [
+                100.0,
+                0.0
+            ],
+            "angle": 45.0,
+            "length": 141.4213562373095,
+            "links": [
+                null,
+                "0.b"
+            ],
+            "isAnchor": false
+        }
+    ]
+}
