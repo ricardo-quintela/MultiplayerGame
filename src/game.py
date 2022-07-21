@@ -1,6 +1,6 @@
 from guiElements.window import Window, WindowEvent
 
-from utils import load_skeleton
+from player import Player
 
 class Game:
 
@@ -8,7 +8,7 @@ class Game:
         self.root = root
         self.events = events
 
-        self.skeleton = load_skeleton("skeleton.json")
+        self.player = Player()
 
 
     def update_display(self):
@@ -16,7 +16,7 @@ class Game:
         self.root.fill("white")
 
 
-        self.skeleton.blit(self.root.canvas)
+        self.player.blit(self.root.canvas)
 
 
         self.root.update()
@@ -25,25 +25,12 @@ class Game:
     
     def mainloop(self):
 
-        pos = [100,100]
-        m = 1
-
         while self.events.getEvent("windowState"):
             self.root.tick()
 
             # update the events
             self.events.eventsCheck()
 
-
-            pos[0] += 5 * m
-
-            if pos[0] <= 100 or pos[0] >= 600:
-                m *= -1
-
-            self.skeleton.getBone("4").set_pos(pos)
-
-            self.skeleton.getLimb("6").follow(self.events.getEvent("mousePos"))
-
-            self.skeleton.update()
+            self.player.update()
 
             self.update_display()

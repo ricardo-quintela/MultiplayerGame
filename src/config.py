@@ -22,7 +22,7 @@ if __name__ == "__main__":
     print(load_config("config.cfg"))
 
 else:
-    config = load_config("config.cfg")
+    config = load_config("./config.cfg")
 
     # turn the str values to tuples and integers
     for section in config:
