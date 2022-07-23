@@ -2,6 +2,7 @@ from pygame import Surface
 
 from utils import load_skeleton
 
+
 class Player:
     def __init__(self) -> None:
         """Constructor of the class Player

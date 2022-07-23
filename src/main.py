@@ -6,6 +6,7 @@ from game import Game
 
 from config import WINDOW
 
+
 def main():
     pygame.init()
     root = Window(WINDOW["SIZE"], WINDOW["FPS"])

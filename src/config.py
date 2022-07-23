@@ -31,3 +31,4 @@ else:
             config[section][key] = eval(value)
 
     WINDOW = config["WINDOW"]
+    PHYSICS = config["PHYSICS"]
