@@ -6,22 +6,22 @@
     ],
     "segments": [
         {
-            "name": "perna_e",
+            "name": "tronco",
             "a": [
-                -30.0,
-                -70.0
+                0.0,
+                -200.0
             ],
             "b": [
-                -40.0,
-                0.0
+                0.0,
+                -100.0
             ],
-            "angle": 98.13010235415598,
-            "length": 70.71067811865476,
+            "angle": 90.0,
+            "length": 100.0,
             "links": [
-                "coxa_e",
+                null,
                 null
             ],
-            "isAnchor": false
+            "isAnchor": true
         },
         {
             "name": "coxa_e",
@@ -78,22 +78,22 @@
             "isAnchor": false
         },
         {
-            "name": "tronco",
+            "name": "perna_e",
             "a": [
-                0.0,
-                -200.0
+                -30.0,
+                -70.0
             ],
             "b": [
-                0.0,
-                -100.0
+                -40.0,
+                0.0
             ],
-            "angle": 90.0,
-            "length": 100.0,
+            "angle": 98.13010235415598,
+            "length": 70.71067811865476,
             "links": [
-                null,
+                "coxa_e",
                 null
             ],
-            "isAnchor": true
+            "isAnchor": false
         },
         {
             "name": "antebraco_e",

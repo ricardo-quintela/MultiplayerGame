@@ -26,7 +26,8 @@ class Entity:
         # acceleration
         self.hasGravity = hasGravity 
         self.acc = Vector2(0,0)
-        self.acc.y = PHYSICS["GRAVITY"]
+        if hasGravity:
+            self.acc.y = PHYSICS["GRAVITY"]
 
 
 
@@ -71,7 +72,11 @@ class Entity:
 
 
     def check_collisions(self, colliders: list):
+        """Handles collisions between this entity and blocks on a given list
 
+        Args:
+            colliders (list): the list of colliders in the level
+        """
 
         for block in colliders:
 
@@ -107,7 +112,7 @@ class Entity:
 
 
 
-    def blit(self, canvas: Surface):
+    def show_hitbox(self, canvas: Surface):
         """Draws a rectangle on the given canvas representing the hitbox of the entity
 
         Args:

@@ -1,4 +1,4 @@
-from pygame import Surface
+from pygame import Surface, Vector2
 
 from .bone import Bone
 from .limb import Limb
@@ -16,6 +16,17 @@ class Skeleton:
 
         self.limbs = list()
         self._limbs_names = dict()
+
+        self.origin = Vector2(0,0)
+
+
+    def set_origin(self, pos: tuple):
+        """Updates the origin of the skeleton
+
+        Args:
+            pos (tuple): the position where to move the origin to
+        """
+        self.origin.update(pos)
 
 
     def add(self, bone: Bone):

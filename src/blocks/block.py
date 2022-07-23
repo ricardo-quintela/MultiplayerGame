@@ -17,7 +17,7 @@ class Block:
 
 
     
-    def blit(self, canvas: Surface):
+    def show_hitbox(self, canvas: Surface):
         """Draws a rectangle on the given canvas representing the hitbox of the block
 
         Args:
