@@ -24,9 +24,9 @@ class Game:
 
         self.colliders = list()
 
-        self.colliders.append(Block((0,400), (800, 200)))
-        self.colliders.append(Block((0,0), (50, 400)))
-        self.colliders.append(Block((750,0), (50, 400)))
+        self.colliders.append(Block((0,400), (800, 200), 1))
+        self.colliders.append(Block((0,0), (50, 400), 1))
+        self.colliders.append(Block((750,0), (50, 400), 1))
 
 
         self.player = Player((60,250))
@@ -68,14 +68,17 @@ class Game:
 
             keys = get_pressed()
 
-            if keys[K_a]:
-                if self.player.acc.x >= 0:
-                    self.player.apply_force((-10,0))
-            if keys[K_d]:
-                if self.player.acc.x <= 0:
-                    self.player.apply_force((10,0))
+            movement_keys = {"left": keys[K_a], "right": keys[K_d]}
+
+            if movement_keys["left"]:
+                self.player.move((-5,0))
+            if movement_keys["right"]:
+                self.player.move((5,0))
+
+            if not (movement_keys["left"] or movement_keys["right"]):
+                self.player.isMoving = False
 
 
-            self.player.update(self.colliders, time)
+            self.player.update(self.colliders)
 
             self.update_display()

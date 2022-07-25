@@ -32,3 +32,4 @@ else:
 
     WINDOW = config["WINDOW"]
     PHYSICS = config["PHYSICS"]
+    ENTITIES = config["ENTITIES"]
