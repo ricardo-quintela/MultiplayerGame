@@ -59,7 +59,7 @@ class Limb:
 
 
     
-    def follow(self, target: tuple):
+    def follow(self, target: tuple, direction: int = 1):
         if len(self.bones) > 2:
             raise Exception("Too many bones on " + self.name)
         elif len(self.bones) < 2:
@@ -93,7 +93,7 @@ class Limb:
         elif temp1 > 1:
             temp1 = 1
 
-        theta1 = acos(temp1) + end_effector_vector_angle
+        theta1 = -direction * acos(temp1) + end_effector_vector_angle
 
 
 
@@ -105,7 +105,7 @@ class Limb:
         elif temp2 > 1:
             temp2 = 1
 
-        theta2 = acos(temp2)
+        theta2 = acos(temp2) * -direction
 
         
         self.bones[0].setRotation(degrees(theta1))

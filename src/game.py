@@ -1,8 +1,7 @@
-from pygame.time import get_ticks
-from pygame.key import get_pressed
-from pygame import K_a, K_d
+from guiElements.window import Window
+from events import GameEvents
 
-from guiElements.window import Window, WindowEvent
+from pygame.draw import circle
 
 from entities import Player
 from blocks import Block
@@ -10,14 +9,14 @@ from blocks import Block
 
 class Game:
 
-    def __init__(self, root: Window, events: WindowEvent) -> None:
+    def __init__(self, root: Window, events: GameEvents) -> None:
         """Constructor of the class Game
 
         This class is ment to handle the rendering as well as the computations like collisions
 
         Args:
             root (Window): the window objecto
-            events (WindowEvent): the window events object
+            events (GameEvents): the window events object
         """
         self.root = root
         self.events = events
@@ -39,13 +38,16 @@ class Game:
         """Updates the pygame display and renders objects on screen
         """
 
+        #! BACKGROUND
         # fill the canvas with white
         self.root.fill("white")
 
+        #! PLAYER
         self.player.blit(self.root.canvas)
         self.player.show_hitbox(self.root.canvas)
 
 
+        #! COLLIDERS
         for collider in self.colliders:
             collider.show_hitbox(self.root.canvas)
 
@@ -60,25 +62,18 @@ class Game:
 
         while self.events.getEvent("windowState"):
             self.root.tick()
-            time = get_ticks()
 
-            # update the events
+            #! EVENTS
             self.events.eventsCheck()
+            movement_keys = {
+                "left": self.events.keyIsPressed("a"),
+                "right": self.events.keyIsPressed("d"),
+                "jump": self.events.keyIsPressed("space")
+                }
 
 
-            keys = get_pressed()
-
-            movement_keys = {"left": keys[K_a], "right": keys[K_d]}
-
-            if movement_keys["left"]:
-                self.player.move((-5,0))
-            if movement_keys["right"]:
-                self.player.move((5,0))
-
-            if not (movement_keys["left"] or movement_keys["right"]):
-                self.player.isMoving = False
-
-
+            #! PLAYER
+            self.player.move(movement_keys)
             self.player.update(self.colliders)
 
             self.update_display()

@@ -1,6 +1,7 @@
 import pygame
 
-from guiElements.window import Window, WindowEvent
+from guiElements.window import Window
+from events import GameEvents
 
 from game import Game
 
@@ -11,7 +12,7 @@ def main():
     pygame.init()
     root = Window(WINDOW["SIZE"], WINDOW["FPS"])
 
-    events = WindowEvent()
+    events = GameEvents()
 
     game = Game(root, events)
     game.mainloop()

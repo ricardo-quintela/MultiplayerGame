@@ -1,6 +1,5 @@
 from pygame import Rect, Surface, Vector2
 from pygame.draw import rect
-from pyparsing import col
 
 
 from config import PHYSICS, ENTITIES
@@ -27,6 +26,9 @@ class Entity:
         self.max_vel_y = max_vel_y
 
         self.isMoving = False
+        self.isJumping = False
+
+        self.direction = 1
 
 
     def set_pos(self, pos: tuple):
@@ -44,12 +46,21 @@ class Entity:
         Args:
             vel (tuple): the velocity vector to apply
         """
-        self.vel.x += vel[0] if abs(self.vel.x + vel[0]) <= self.max_vel_x else 0
-        self.vel.y += vel[1] if abs(self.vel.y + vel[1]) <= self.max_vel_y else 0
+        self.vel.x += vel[0]
+        self.vel.y += vel[1] if self.vel.y + vel[1] <= self.max_vel_y else 0
+
+        # movement direction
+        if vel[0] < 0:
+            self.direction = -1
+            if self.vel.x < -self.max_vel_x:
+                self.vel.x = -self.max_vel_x
+                
+        elif vel[0] > 0:
+            self.direction = 1
+            if self.vel.x > self.max_vel_x:
+                self.vel.x = self.max_vel_x
 
         self.isMoving = True
-
-        print(self.vel)
 
 
     def update(self):
@@ -98,6 +109,7 @@ class Entity:
                 if min_dist == "top":
                     self.hitbox.bottom = block.hitbox.top
                     self.vel.y = 0
+                    self.isJumping = False
                     
                     # calculate friction when the entity is not moving
                     if not self.isMoving:
