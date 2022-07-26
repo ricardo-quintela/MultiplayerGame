@@ -26,6 +26,7 @@ class Game:
         self.colliders.append(Block((0,400), (800, 200), 1))
         self.colliders.append(Block((0,0), (50, 400), 1))
         self.colliders.append(Block((750,0), (50, 400), 1))
+        self.colliders.append(Block((500,370), (60, 30), 1))
 
 
         self.player = Player((60,250))
@@ -50,6 +51,11 @@ class Game:
         #! COLLIDERS
         for collider in self.colliders:
             collider.show_hitbox(self.root.canvas)
+
+
+        circle(self.root.canvas, "green", self.player.target_leg_pos, 4)
+        circle(self.root.canvas, "blue", self.player.lerp_l, 4)
+        circle(self.root.canvas, "cyan", self.player.lerp_r, 4)
 
 
         self.root.update()

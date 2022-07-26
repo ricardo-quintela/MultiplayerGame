@@ -1,6 +1,6 @@
 from math import cos, sin
 from pygame import Surface, Vector2
-from config import ENTITIES
+from config import ENTITIES, PHYSICS
 
 from utils import load_skeleton
 from .entity import Entity
@@ -17,33 +17,63 @@ class Player(Entity):
         self.lerp_l = Vector2(self.pos)
         self.lerp_r = Vector2(self.pos)
 
+        self.leg_l = Vector2(self.pos)
+        self.leg_r = Vector2(self.pos)
+
         self.current_leg = 0
 
-        self.legs = [self.lerp_l, self.lerp_r]
+        self.lerps = [self.lerp_l, self.lerp_r]
+        self.legs = [self.leg_l, self.leg_r]
 
         self.target_leg_pos = Vector2(self.pos)
 
 
     
-    def move_legs(self):
-        self.target_leg_pos.update(self.pos + (self.direction * (self.hitbox.width / 2), 0))
+    def move_legs(self, colliders: list):
 
+        #! RAYCAST OF TARGET POS
+        # start of the player leg target position
+        self.target_leg_pos.update(self.pos + (self.direction * ENTITIES["LEG_TARGET"], -ENTITIES["LEG_TARGET_HEIGHT"]))
+
+        # ray cast the target position until it reaches the limit of the hitbox
+        while self.target_leg_pos.y < self.pos.y:
+
+            # check collisions of the target point for each object
+            for block in colliders:
+
+
+                # if the point collides with an object and its top is between the allowed step height set the target position to the top of the block
+                if block.hitbox.collidepoint(self.target_leg_pos) and block.hitbox.top >= self.pos.y - ENTITIES["LEG_TARGET_HEIGHT"]:
+                    self.target_leg_pos.y = block.hitbox.top
+                    break # break the for loop
+
+
+            else: # update the target y position if the for loop completes without breaking
+                self.target_leg_pos.y += ENTITIES["LEG_SCANNER_STEP"]
+                continue # continue the while loop
+            
+            break # break if the program doesnt enter else
+
+
+
+        # cap the target y pos to the limit of the hitbox in case of the leg scanner step is to high
+        if self.target_leg_pos.y > self.pos.y:
+            self.target_leg_pos.y = self.pos.y
+
+        self.lerps[self.current_leg].update(self.target_leg_pos)
+        
         legs = ["coxa_e", "perna_e", "coxa_d", "perna_d"]
 
-        distance = (self.model.getBone(legs[self.current_leg*2 + 1]).b - self.model.getBone(legs[self.current_leg * 2]).a).length()
 
-        if distance >= (self.model.getBone(legs[self.current_leg * 2]).length + self.model.getBone(legs[self.current_leg * 2 + 1]).length):
-            self.legs[self.current_leg].update(self.target_leg_pos)
+        distance = (self.model.getBone(legs[self.current_leg * 2 + 1]).b - self.model.getBone(legs[self.current_leg * 2]).a).length()
+
+
+        if (self.lerps[(self.current_leg + 1) % 2] - self.model.getBone(legs[self.current_leg * 2]).a).length() > distance:
             self.current_leg = (self.current_leg + 1) % 2
 
 
+        self.legs[self.current_leg].update(self.lerps[self.current_leg])
 
-
-    def calculate_center(self):
-        """Updates the center coordinate of the bone
-        """
-        tronco = self.model.getBone("tronco")
-        self.model_center.update(tronco.a.x + cos(tronco.angle) * (tronco.length / 2), tronco.a.y + sin(tronco.angle) * (tronco.length / 2))
 
 
 
@@ -81,7 +111,7 @@ class Player(Entity):
 
         self.check_collisions(colliders)
 
-        self.move_legs()
+        self.move_legs(colliders)
 
 
         #? updates the player model bones
@@ -91,10 +121,10 @@ class Player(Entity):
         self.model.getBone("tronco").a.update(self.model.origin - vector)
 
         # make the limbs follow specific points
-        self.model.getLimb("coxa_e").follow(self.lerp_l, self.direction)
-        self.model.getLimb("coxa_d").follow(self.lerp_r, self.direction)
-        self.model.getLimb("antebraco_e").follow(self.hitbox.midleft)
-        self.model.getLimb("antebraco_d").follow(self.hitbox.midright)
+        self.model.getLimb("coxa_e").follow(self.leg_l, self.direction)
+        self.model.getLimb("coxa_d").follow(self.leg_r, self.direction)
+        self.model.getLimb("antebraco_e").follow(self.hitbox.midleft, -self.direction)
+        self.model.getLimb("antebraco_d").follow(self.hitbox.midright, -self.direction)
 
         # update the skeleton object
         self.model.update()
