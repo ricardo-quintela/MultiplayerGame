@@ -1,6 +1,7 @@
-from math import cos, sin
+from math import sqrt
 from pygame import Surface, Vector2
-from config import ENTITIES, PHYSICS
+from pygame.time import get_ticks
+from config import ENTITIES, ANIMATIONS
 
 from utils import load_skeleton
 from .entity import Entity
@@ -27,13 +28,17 @@ class Player(Entity):
 
         self.target_leg_pos = Vector2(self.pos)
 
+        self.keyframes = list()
+        self.current_keyframe = 0
+        self.last_keyframe_time = 0
+
 
     
     def move_legs(self, colliders: list):
 
         #! RAYCAST OF TARGET POS
         # start of the player leg target position
-        self.target_leg_pos.update(self.pos + (self.direction * ENTITIES["LEG_TARGET"], -ENTITIES["LEG_TARGET_HEIGHT"]))
+        self.target_leg_pos.update(self.pos + (self.direction * ANIMATIONS["LEG_TARGET"], -ANIMATIONS["LEG_TARGET_HEIGHT"]))
 
         # ray cast the target position until it reaches the limit of the hitbox
         while self.target_leg_pos.y < self.pos.y:
@@ -43,13 +48,13 @@ class Player(Entity):
 
 
                 # if the point collides with an object and its top is between the allowed step height set the target position to the top of the block
-                if block.hitbox.collidepoint(self.target_leg_pos) and block.hitbox.top >= self.pos.y - ENTITIES["LEG_TARGET_HEIGHT"]:
+                if block.hitbox.collidepoint(self.target_leg_pos) and block.hitbox.top >= self.pos.y - ANIMATIONS["LEG_TARGET_HEIGHT"]:
                     self.target_leg_pos.y = block.hitbox.top
                     break # break the for loop
 
 
             else: # update the target y position if the for loop completes without breaking
-                self.target_leg_pos.y += ENTITIES["LEG_SCANNER_STEP"]
+                self.target_leg_pos.y += ANIMATIONS["LEG_SCANNER_STEP"]
                 continue # continue the while loop
             
             break # break if the program doesnt enter else
@@ -60,19 +65,62 @@ class Player(Entity):
         if self.target_leg_pos.y > self.pos.y:
             self.target_leg_pos.y = self.pos.y
 
-        self.lerps[self.current_leg].update(self.target_leg_pos)
         
         legs = ["coxa_e", "perna_e", "coxa_d", "perna_d"]
-
 
         distance = (self.model.getBone(legs[self.current_leg * 2 + 1]).b - self.model.getBone(legs[self.current_leg * 2]).a).length()
 
 
+        # lerp pos gets too far away from leg so it must be stretched to it maximum
         if (self.lerps[(self.current_leg + 1) % 2] - self.model.getBone(legs[self.current_leg * 2]).a).length() > distance:
+            
+            self.lerps[self.current_leg].update(self.target_leg_pos)
+
+            # change leg
             self.current_leg = (self.current_leg + 1) % 2
+            self.current_keyframe = 0
+            self.keyframes.clear()
+            vector = (self.target_leg_pos - self.lerps[self.current_leg]) / ANIMATIONS["KEYFRAMES"]
+
+            # calculate the x axis translation
+            if vector.y != 0:
+                d = self.direction * (2 * (
+                    self.direction * vector.x * ANIMATIONS["LEG_TARGET_HEIGHT"] - sqrt(
+                        vector.x**2 * ANIMATIONS["LEG_TARGET_HEIGHT"]**2 + vector.x**2 * vector.y * ANIMATIONS["LEG_TARGET_HEIGHT"])
+                    ) / -vector.y)
+
+            elif vector.x == 0:
+                return
+            else:
+                d = vector.x
 
 
-        self.legs[self.current_leg].update(self.lerps[self.current_leg])
+            # calculate the expansion
+            a = (vector.y + ANIMATIONS["LEG_TARGET_HEIGHT"]) / (vector.x - (d / 2))**2
+
+            print("d:", d, "a:", a)
+
+            # calculate the keyframes
+            for i in range(1, ANIMATIONS["KEYFRAMES"] + 1):
+                kf = (a * ((vector.x * i) - d/2)**2) - ANIMATIONS["LEG_TARGET_HEIGHT"]
+                self.keyframes.append(Vector2(vector.x * i, kf))
+            print(self.keyframes)
+
+            # calculate the vector of each keyframe
+            for i in range(1, len(self.keyframes)):
+                self.keyframes[i] = self.keyframes[i] - self.keyframes[i-1]
+
+
+        if len(self.keyframes) == 0:
+            return
+
+        # translate the foot position with the corresponding vector
+        if get_ticks() - self.last_keyframe_time >= ANIMATIONS["KF_TIME"]:
+            print("update: ", get_ticks(), "\nleg pos: ", self.legs[self.current_leg], sep="")
+            self.last_keyframe_time = get_ticks()
+            self.legs[self.current_leg] += self.keyframes[self.current_keyframe]
+            self.current_keyframe = (self.current_keyframe + 1) % ANIMATIONS["KEYFRAMES"]
+
 
 
 

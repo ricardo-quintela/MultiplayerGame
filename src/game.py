@@ -1,4 +1,5 @@
 from guiElements.window import Window
+from pygame import Vector2
 from events import GameEvents
 
 from pygame.draw import circle
@@ -56,6 +57,14 @@ class Game:
         circle(self.root.canvas, "green", self.player.target_leg_pos, 4)
         circle(self.root.canvas, "blue", self.player.lerp_l, 4)
         circle(self.root.canvas, "cyan", self.player.lerp_r, 4)
+
+        kf = Vector2(0,0)
+
+        for k in self.player.keyframes:
+            circle(self.root.canvas, "orange", kf + k, 4)
+            kf = kf+k
+
+            
 
 
         self.root.update()
