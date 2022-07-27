@@ -27,7 +27,7 @@ class Game:
         self.colliders.append(Block((0,400), (800, 200), 1))
         self.colliders.append(Block((0,0), (50, 400), 1))
         self.colliders.append(Block((750,0), (50, 400), 1))
-        self.colliders.append(Block((500,370), (60, 30), 1))
+        #self.colliders.append(Block((500,370), (60, 30), 1))
 
 
         self.player = Player((60,250))
@@ -58,12 +58,10 @@ class Game:
         circle(self.root.canvas, "blue", self.player.lerp_l, 4)
         circle(self.root.canvas, "cyan", self.player.lerp_r, 4)
 
-        kf = Vector2(0,0)
-
         for k in self.player.keyframes:
-            circle(self.root.canvas, "orange", kf + k, 4)
-            kf = kf+k
+            circle(self.root.canvas, "orange", k, 4)
 
+        circle(self.root.canvas, "black", self.player.legs[self.player.current_leg], 4)
             
 
 

@@ -36,6 +36,15 @@ class Player(Entity):
     
     def move_legs(self, colliders: list):
 
+        # cap the leg positioning
+        for leg in self.legs:
+            if leg.y < self.pos.y - ANIMATIONS["LEG_TARGET_HEIGHT"]:
+                leg.y = self.pos.y - ANIMATIONS["LEG_TARGET_HEIGHT"]
+
+            if self.current_leg == 0 and leg.y < self.pos.y:
+                leg.y = self.pos.y
+
+
         #! RAYCAST OF TARGET POS
         # start of the player leg target position
         self.target_leg_pos.update(self.pos + (self.direction * ANIMATIONS["LEG_TARGET"], -ANIMATIONS["LEG_TARGET_HEIGHT"]))
@@ -80,7 +89,7 @@ class Player(Entity):
             self.current_leg = (self.current_leg + 1) % 2
             self.current_keyframe = 0
             self.keyframes.clear()
-            vector = (self.target_leg_pos - self.lerps[self.current_leg]) / ANIMATIONS["KEYFRAMES"]
+            vector = (self.target_leg_pos - self.lerps[self.current_leg])
 
             # calculate the x axis translation
             if vector.y != 0:
@@ -98,17 +107,16 @@ class Player(Entity):
             # calculate the expansion
             a = (vector.y + ANIMATIONS["LEG_TARGET_HEIGHT"]) / (vector.x - (d / 2))**2
 
-            print("d:", d, "a:", a)
+            #print("d:", d, "a:", a, "vector:", vector)
+
+            vector /= ANIMATIONS["KEYFRAMES"]
 
             # calculate the keyframes
             for i in range(1, ANIMATIONS["KEYFRAMES"] + 1):
                 kf = (a * ((vector.x * i) - d/2)**2) - ANIMATIONS["LEG_TARGET_HEIGHT"]
-                self.keyframes.append(Vector2(vector.x * i, kf))
-            print(self.keyframes)
-
-            # calculate the vector of each keyframe
-            for i in range(1, len(self.keyframes)):
-                self.keyframes[i] = self.keyframes[i] - self.keyframes[i-1]
+                self.keyframes.append(Vector2(vector.x * i, kf) + self.vel + self.lerps[self.current_leg])
+                print(kf, end=" ")
+            print("\n", self.keyframes)
 
 
         if len(self.keyframes) == 0:
@@ -116,10 +124,14 @@ class Player(Entity):
 
         # translate the foot position with the corresponding vector
         if get_ticks() - self.last_keyframe_time >= ANIMATIONS["KF_TIME"]:
-            print("update: ", get_ticks(), "\nleg pos: ", self.legs[self.current_leg], sep="")
+            #print("update: ", get_ticks(), "\nleg pos: ", self.legs[self.current_leg], sep="")
             self.last_keyframe_time = get_ticks()
-            self.legs[self.current_leg] += self.keyframes[self.current_keyframe]
+            self.legs[self.current_leg].update(self.keyframes[self.current_keyframe])
             self.current_keyframe = (self.current_keyframe + 1) % ANIMATIONS["KEYFRAMES"]
+
+            #print(self.legs[self.current_leg], self.keyframes[self.current_keyframe], self.lerps[self.current_leg])
+        #print("vel:", self.vel)
+
 
 
 
