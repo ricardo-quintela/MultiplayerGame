@@ -114,3 +114,27 @@ class Skeleton:
 
         for bone in self.bones:
             bone.blit(canvas)
+
+
+
+    def __repr__(self) -> str:
+        """Returns a string representation of the object
+
+        Returns:
+            str: the string representation of the object
+        """
+        string = "Origin: " + str(self.origin.x) + ", " + str(self.origin.y) + "\n"
+
+        bones = list(self._names.keys())
+
+        for limb in self._limbs_names:
+            string += limb + ":\n"
+            for bone in self.getLimb(limb).bones:
+                string += "\t" + bone.name + "\n"
+                bones.remove(bone.name)
+
+        for bone in bones:
+            string += bone + "\n"
+
+        return string
+        

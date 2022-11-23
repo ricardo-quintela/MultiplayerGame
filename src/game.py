@@ -27,11 +27,11 @@ class Game:
         self.colliders.append(Block((0,400), (800, 200), 1))
         self.colliders.append(Block((0,0), (50, 400), 1))
         self.colliders.append(Block((750,0), (50, 400), 1))
-        #self.colliders.append(Block((500,370), (60, 30), 1))
+        self.colliders.append(Block((500,370), (60, 30), 1))
 
 
         self.player = Player((60,250))
-        self.player.set_pos((400,300))
+        self.player.set_pos((400,400))
 
 
 

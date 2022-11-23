@@ -1,4 +1,4 @@
-from math import sqrt
+from math import sqrt, sin, cos
 from pygame import Surface, Vector2
 from pygame.time import get_ticks
 from config import ENTITIES, ANIMATIONS
@@ -10,7 +10,7 @@ class Player(Entity):
     def __init__(self, hitbox_size) -> None:
         """Constructor of the class Player
         """
-        super().__init__(hitbox_size, hasGravity=True)
+        super().__init__(hitbox_size, has_gravity=True)
         
         self.model = load_skeleton("skeleton.json")
 
@@ -20,6 +20,8 @@ class Player(Entity):
 
         self.leg_l = Vector2(self.pos)
         self.leg_r = Vector2(self.pos)
+
+        self.hip = self.model.getLimb("coxa_e").anchor
 
         self.current_leg = 0
 
@@ -35,6 +37,7 @@ class Player(Entity):
 
     
     def move_legs(self, colliders: list):
+
 
         # cap the leg positioning
         for leg in self.legs:
@@ -68,69 +71,17 @@ class Player(Entity):
             
             break # break if the program doesnt enter else
 
-
-
-        # cap the target y pos to the limit of the hitbox in case of the leg scanner step is to high
-        if self.target_leg_pos.y > self.pos.y:
-            self.target_leg_pos.y = self.pos.y
-
+        # se a distancia da anca até ao pe for menor que o tamanho da perna: lerp = target pos
         
-        legs = ["coxa_e", "perna_e", "coxa_d", "perna_d"]
+        if (self.hip - self.legs[self.current_leg]).length() > self.model.getLimb("coxa_e").size:
 
-        distance = (self.model.getBone(legs[self.current_leg * 2 + 1]).b - self.model.getBone(legs[self.current_leg * 2]).a).length()
-
-
-        # lerp pos gets too far away from leg so it must be stretched to it maximum
-        if (self.lerps[(self.current_leg + 1) % 2] - self.model.getBone(legs[self.current_leg * 2]).a).length() > distance:
-            
             self.lerps[self.current_leg].update(self.target_leg_pos)
-
-            # change leg
             self.current_leg = (self.current_leg + 1) % 2
-            self.current_keyframe = 0
-            self.keyframes.clear()
-            vector = (self.target_leg_pos - self.lerps[self.current_leg])
-
-            # calculate the x axis translation
-            if vector.y != 0:
-                d = self.direction * (2 * (
-                    self.direction * vector.x * ANIMATIONS["LEG_TARGET_HEIGHT"] - sqrt(
-                        vector.x**2 * ANIMATIONS["LEG_TARGET_HEIGHT"]**2 + vector.x**2 * vector.y * ANIMATIONS["LEG_TARGET_HEIGHT"])
-                    ) / -vector.y)
-
-            elif vector.x == 0:
-                return
-            else:
-                d = vector.x
 
 
-            # calculate the expansion
-            a = (vector.y + ANIMATIONS["LEG_TARGET_HEIGHT"]) / (vector.x - (d / 2))**2
+        if self.legs[self.current_leg] < self.lerps[self.current_leg]:
+            self.legs[self.current_leg] += (self.direction * 100, 0)
 
-            #print("d:", d, "a:", a, "vector:", vector)
-
-            vector /= ANIMATIONS["KEYFRAMES"]
-
-            # calculate the keyframes
-            for i in range(1, ANIMATIONS["KEYFRAMES"] + 1):
-                kf = (a * ((vector.x * i) - d/2)**2) - ANIMATIONS["LEG_TARGET_HEIGHT"]
-                self.keyframes.append(Vector2(vector.x * i, kf) + self.vel + self.lerps[self.current_leg])
-                print(kf, end=" ")
-            print("\n", self.keyframes)
-
-
-        if len(self.keyframes) == 0:
-            return
-
-        # translate the foot position with the corresponding vector
-        if get_ticks() - self.last_keyframe_time >= ANIMATIONS["KF_TIME"]:
-            #print("update: ", get_ticks(), "\nleg pos: ", self.legs[self.current_leg], sep="")
-            self.last_keyframe_time = get_ticks()
-            self.legs[self.current_leg].update(self.keyframes[self.current_keyframe])
-            self.current_keyframe = (self.current_keyframe + 1) % ANIMATIONS["KEYFRAMES"]
-
-            #print(self.legs[self.current_leg], self.keyframes[self.current_keyframe], self.lerps[self.current_leg])
-        #print("vel:", self.vel)
 
 
 
@@ -152,9 +103,9 @@ class Player(Entity):
             self.isMoving = False
 
 
-        if not self.isJumping and movement_keys["jump"]:
+        if not self.is_jumping and movement_keys["jump"]:
             super().move((0,-ENTITIES["JUMP_HEIGHT"]))
-            self.isJumping = True
+            self.is_jumping = True
 
 
 

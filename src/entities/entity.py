@@ -7,7 +7,7 @@ from config import PHYSICS, ENTITIES
 
 class Entity:
 
-    def __init__(self, hitbox_size: tuple, hasGravity: bool = True, max_vel_x: int = ENTITIES["MAX_VEL_X"], max_vel_y: int = ENTITIES["MAX_VEL_Y"]) -> None:
+    def __init__(self, hitbox_size: tuple, has_gravity: bool = True, max_vel_x: int = ENTITIES["MAX_VEL_X"], max_vel_y: int = ENTITIES["MAX_VEL_Y"]) -> None:
         """Constructor of the class Entity
 
         Args:
@@ -21,12 +21,12 @@ class Entity:
         # velocity
         self.vel = Vector2(0,0)
 
-        self.hasGravity = hasGravity
+        self.has_gravity = has_gravity
         self.max_vel_x = max_vel_x
         self.max_vel_y = max_vel_y
 
-        self.isMoving = False
-        self.isJumping = False
+        self.is_moving = False
+        self.is_jumping = False
 
         self.direction = 1
 
@@ -89,9 +89,12 @@ class Entity:
 
         self.hitbox.center += self.vel
 
+        # iterate through colliders
         for block in colliders:
 
+            # found a collision
             if self.hitbox.colliderect(block.hitbox):
+
 
                 # keys are block's sides
                 distances = {
@@ -109,7 +112,7 @@ class Entity:
                 if min_dist == "top":
                     self.hitbox.bottom = block.hitbox.top
                     self.vel.y = 0
-                    self.isJumping = False
+                    self.is_jumping = False
                     
                     # calculate friction when the entity is not moving
                     if not self.isMoving:

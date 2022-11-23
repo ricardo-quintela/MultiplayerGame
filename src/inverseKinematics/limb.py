@@ -23,6 +23,8 @@ class Limb:
 
         self.anchor = None
 
+        self.size = 0
+
 
     def setName(self, name: str):
         """Sets the name attribute to the given string
@@ -45,6 +47,8 @@ class Limb:
 
         # add the bone to the list
         self.bones.append(bone)
+
+        self.size += bone.length
 
 
     def fixate(self, anchor):
