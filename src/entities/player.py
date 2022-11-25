@@ -35,8 +35,50 @@ class Player(Entity):
         self.last_keyframe_time = 0
 
 
+
+    def calculate_target_pos(self, colliders: list):
+        """Calculates the target postion of the leg
+
+        Args:
+            colliders (list): the list of colliders in the map
+        """
+
+
+        # start of the player leg target position
+        self.target_leg_pos.update(self.pos + (self.direction * ANIMATIONS["LEG_TARGET"], -ANIMATIONS["LEG_TARGET_HEIGHT"]))
+
+        # ray cast the target position until it reaches the limit of the hitbox
+        while self.target_leg_pos.y < self.pos.y:
+
+            # check collisions of the target point for each object
+            for block in colliders:
+
+
+                # if the point collides with an object and its top is between
+                # the allowed step heightset the target position to the top of the block
+                if block.hitbox.collidepoint(self.target_leg_pos) and block.hitbox.top >= self.pos.y - ANIMATIONS["LEG_TARGET_HEIGHT"]:
+                    self.target_leg_pos.y = block.hitbox.top
+                    break # break the for loop
+
+
+            else: # update the target y position if the for loop completes without breaking
+                self.target_leg_pos.y += ANIMATIONS["LEG_SCANNER_STEP"]
+                continue # continue the while loop
+
+            break # break if the program doesnt enter else
+
+
     
     def move_legs(self, colliders: list):
+        """Moves the legs using procedural movement calculation
+        algorithms
+
+        Args:
+            colliders (list): the list of colliders in the map
+        """
+
+        if self.is_jumping:
+            return
 
 
         # cap the leg positioning
@@ -49,47 +91,31 @@ class Player(Entity):
 
 
         #! RAYCAST OF TARGET POS
-        # start of the player leg target position
-        self.target_leg_pos.update(self.pos + (self.direction * ANIMATIONS["LEG_TARGET"], -ANIMATIONS["LEG_TARGET_HEIGHT"]))
-
-        # ray cast the target position until it reaches the limit of the hitbox
-        while self.target_leg_pos.y < self.pos.y:
-
-            # check collisions of the target point for each object
-            for block in colliders:
-
-
-                # if the point collides with an object and its top is between the allowed step height set the target position to the top of the block
-                if block.hitbox.collidepoint(self.target_leg_pos) and block.hitbox.top >= self.pos.y - ANIMATIONS["LEG_TARGET_HEIGHT"]:
-                    self.target_leg_pos.y = block.hitbox.top
-                    break # break the for loop
-
-
-            else: # update the target y position if the for loop completes without breaking
-                self.target_leg_pos.y += ANIMATIONS["LEG_SCANNER_STEP"]
-                continue # continue the while loop
-            
-            break # break if the program doesnt enter else
+        # calculate the target position
+        self.calculate_target_pos(colliders)
 
         # se a distancia da anca até ao pe for menor que o tamanho da perna: lerp = target pos
-        
         if (self.hip - self.legs[self.current_leg]).length() > self.model.getLimb("coxa_e").size:
 
             self.lerps[self.current_leg].update(self.target_leg_pos)
             self.current_leg = (self.current_leg + 1) % 2
 
+        # move the leg to the lerp position
+        for i, leg in enumerate(self.legs):
+            leg.update(self.lerps[i])
 
-        if self.legs[self.current_leg] < self.lerps[self.current_leg]:
-            self.legs[self.current_leg] += (self.direction * 100, 0)
+            leg_spacing = (self.lerps[i] - self.lerps[(i+1) % 2]).length()
+
+            if leg_spacing < ANIMATIONS["LEG_SPACING"]:
+                self.lerps[(self.current_leg + 1) % 2].x -= ANIMATIONS["LEG_SPACING"] - leg_spacing
 
 
 
 
-
-
-
+    
     def move(self, movement_keys: dict):
-        """Checks for movement input and gives the player a velocity vector based on the movement direction
+        """Checks for movement input and gives the player
+        a velocity vector based on the movement direction
 
         Args:
             movement_keys (dict): the movement keys that are being pressed
@@ -100,7 +126,7 @@ class Player(Entity):
             super().move((5,0))
 
         if not (movement_keys["left"] or movement_keys["right"]):
-            self.isMoving = False
+            self.is_moving = False
 
 
         if not self.is_jumping and movement_keys["jump"]:

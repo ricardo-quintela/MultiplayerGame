@@ -60,7 +60,7 @@ class Entity:
             if self.vel.x > self.max_vel_x:
                 self.vel.x = self.max_vel_x
 
-        self.isMoving = True
+        self.is_moving = True
 
 
     def update(self):
@@ -115,7 +115,7 @@ class Entity:
                     self.is_jumping = False
                     
                     # calculate friction when the entity is not moving
-                    if not self.isMoving:
+                    if not self.is_moving:
 
                         # friction
                         if self.vel.x < 0:
