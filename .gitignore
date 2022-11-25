@@ -11,4 +11,4 @@ lib/
 bin/
 Include/
 Scripts/
-pyenv.cfg
+pyvenv.cfg
