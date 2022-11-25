@@ -5,6 +5,7 @@ __pychache__/
 .obsidian/
 
 # virtualenv
+venv/
 Lib/
 lib/
 bin/
