@@ -2,14 +2,12 @@ from pygame import Rect, Surface, Vector2
 from pygame.draw import rect
 
 
-from config import PHYSICS
+from config import PHYSICS, ENTITIES
 
 
 class Entity:
 
-    last_update: int = 0
-
-    def __init__(self, hitbox_size: tuple, hasGravity: bool = True) -> None:
+    def __init__(self, hitbox_size: tuple, has_gravity: bool = True, max_vel_x: int = ENTITIES["MAX_VEL_X"], max_vel_y: int = ENTITIES["MAX_VEL_Y"]) -> None:
         """Constructor of the class Entity
 
         Args:
@@ -23,12 +21,14 @@ class Entity:
         # velocity
         self.vel = Vector2(0,0)
 
-        # acceleration
-        self.hasGravity = hasGravity 
-        self.acc = Vector2(0,0)
-        self.acc.y = PHYSICS["GRAVITY"]
+        self.has_gravity = has_gravity
+        self.max_vel_x = max_vel_x
+        self.max_vel_y = max_vel_y
 
+        self.is_moving = False
+        self.is_jumping = False
 
+        self.direction = 1
 
 
     def set_pos(self, pos: tuple):
@@ -40,25 +40,35 @@ class Entity:
         self.pos.update(pos)
 
 
-    def apply_force(self, force: tuple):
-        """Applies a force to the entity\n
-
-        Affects acceleration and velocity in the initial instant
+    def move(self, vel: tuple):
+        """Gives the entity a given velocity vector\n
 
         Args:
-            force (tuple): the force to apply to the entity
+            vel (tuple): the velocity vector to apply
         """
-        self.acc += force
+        self.vel.x += vel[0]
+        self.vel.y += vel[1] if self.vel.y + vel[1] <= self.max_vel_y else 0
+
+        # movement direction
+        if vel[0] < 0:
+            self.direction = -1
+            if self.vel.x < -self.max_vel_x:
+                self.vel.x = -self.max_vel_x
+                
+        elif vel[0] > 0:
+            self.direction = 1
+            if self.vel.x > self.max_vel_x:
+                self.vel.x = self.max_vel_x
+
+        self.is_moving = True
 
 
-    def update(self, time: int):
-        """Calculate the position based on the acceleration
+    def update(self):
+        """Calculate the position based on the velocity
         """
 
         # updating the vellocity
-        if time - Entity.last_update >= PHYSICS["SECOND"]:
-            self.vel += self.acc
-            Entity.last_update = time
+        self.vel.y += PHYSICS["GRAVITY"]
 
         # updating the position
         self.pos += self.vel
@@ -71,11 +81,20 @@ class Entity:
 
 
     def check_collisions(self, colliders: list):
+        """Handles collisions between this entity and blocks on a given list
 
+        Args:
+            colliders (list): the list of colliders in the level
+        """
 
+        self.hitbox.center += self.vel
+
+        # iterate through colliders
         for block in colliders:
 
+            # found a collision
             if self.hitbox.colliderect(block.hitbox):
+
 
                 # keys are block's sides
                 distances = {
@@ -93,6 +112,18 @@ class Entity:
                 if min_dist == "top":
                     self.hitbox.bottom = block.hitbox.top
                     self.vel.y = 0
+                    self.is_jumping = False
+                    
+                    # calculate friction when the entity is not moving
+                    if not self.is_moving:
+
+                        # friction
+                        if self.vel.x < 0:
+                            self.vel.x += block.friction
+                        elif self.vel.x > 0:
+                            self.vel.x -= block.friction
+
+
                 elif min_dist == "left":
                     self.hitbox.right = block.hitbox.left
                     self.vel.x = 0
@@ -106,8 +137,7 @@ class Entity:
                 self.pos.update(self.hitbox.midbottom)
 
 
-
-    def blit(self, canvas: Surface):
+    def show_hitbox(self, canvas: Surface):
         """Draws a rectangle on the given canvas representing the hitbox of the entity
 
         Args:

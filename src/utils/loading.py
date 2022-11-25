@@ -30,6 +30,7 @@ def load_skeleton(path: str) -> Skeleton:
 
     # create a skeleton object
     skeleton = Skeleton()
+    skeleton.set_origin(origin)
 
     # add the bones to the skeleton (they dont need to be in order because the skeleton object allows hash searching by the name of the bone/limb)
     for bone in model["segments"]:

@@ -1,0 +1,14 @@
+# python cache files
+__pychache__/
+
+# obsidian
+.obsidian/
+
+# virtualenv
+venv/
+Lib/
+lib/
+bin/
+Include/
+Scripts/
+pyenv.cfg
