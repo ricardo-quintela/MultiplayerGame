@@ -24,6 +24,7 @@ class Game:
 
         self.colliders = list()
 
+        # map
         self.colliders.append(Block((0,400), (800, 200), 1))
         self.colliders.append(Block((0,0), (50, 400), 1))
         self.colliders.append(Block((750,0), (50, 400), 1))
@@ -63,8 +64,6 @@ class Game:
 
         circle(self.root.canvas, "black", self.player.legs[self.player.current_leg], 4)
             
-
-
         self.root.update()
 
 

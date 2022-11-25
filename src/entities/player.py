@@ -36,36 +36,42 @@ class Player(Entity):
 
 
 
-    def calculate_target_pos(self, colliders: list):
+    def calculate_target_pos(self, colliders: list, pos: Vector2, direction: int) -> Vector2:
         """Calculates the target postion of the leg
 
         Args:
             colliders (list): the list of colliders in the map
+            pos: (Vector2): the player's position
+            direction: (int): the direction the player is facing
+
+        Returns:
+            Vector2: the target position of the leg end effector
         """
 
 
         # start of the player leg target position
-        self.target_leg_pos.update(self.pos + (self.direction * ANIMATIONS["LEG_TARGET"], -ANIMATIONS["LEG_TARGET_HEIGHT"]))
+        target_leg_pos = pos + (direction * ANIMATIONS["LEG_TARGET"], -ANIMATIONS["LEG_TARGET_HEIGHT"])
 
         # ray cast the target position until it reaches the limit of the hitbox
-        while self.target_leg_pos.y < self.pos.y:
+        while target_leg_pos.y < pos.y:
 
             # check collisions of the target point for each object
             for block in colliders:
 
-
                 # if the point collides with an object and its top is between
                 # the allowed step heightset the target position to the top of the block
-                if block.hitbox.collidepoint(self.target_leg_pos) and block.hitbox.top >= self.pos.y - ANIMATIONS["LEG_TARGET_HEIGHT"]:
-                    self.target_leg_pos.y = block.hitbox.top
+                if block.hitbox.collidepoint(target_leg_pos) and block.hitbox.top >= pos.y - ANIMATIONS["LEG_TARGET_HEIGHT"]:
+                    target_leg_pos.y = block.hitbox.top
                     break # break the for loop
 
 
             else: # update the target y position if the for loop completes without breaking
-                self.target_leg_pos.y += ANIMATIONS["LEG_SCANNER_STEP"]
+                target_leg_pos.y += ANIMATIONS["LEG_SCANNER_STEP"]
                 continue # continue the while loop
 
             break # break if the program doesnt enter else
+
+        return target_leg_pos
 
 
     
@@ -92,7 +98,7 @@ class Player(Entity):
 
         #! RAYCAST OF TARGET POS
         # calculate the target position
-        self.calculate_target_pos(colliders)
+        self.target_leg_pos.update(self.calculate_target_pos(colliders, self.pos, self.direction))
 
         # se a distancia da anca até ao pe for menor que o tamanho da perna: lerp = target pos
         if (self.hip - self.legs[self.current_leg]).length() > self.model.getLimb("coxa_e").size:

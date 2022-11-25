@@ -3,6 +3,27 @@ from json import loads
 from inverseKinematics import Skeleton, Bone
 
 
+def read_file(path: str):
+    """Reads a file on the given path
+
+    Args:
+        path (str): the path to the file
+
+    Returns:
+        str: the contents of the file
+    """
+    # read the contents of the file
+    try:
+        with open(path, "r") as model_file:
+            data = model_file.read()
+
+    except OSError:
+        print(f"ERROR: While loading model at {path}")
+        return
+
+    return data
+
+
 def load_skeleton(path: str) -> Skeleton:
     """Loads the skeleton model on the given path
 
@@ -13,14 +34,8 @@ def load_skeleton(path: str) -> Skeleton:
         Skeleton: the skeleton object loaded from the json path
     """
 
-    # read the contents of the file
-    try:
-        with open(path, "r") as model_file:
-            data = model_file.read()
-
-    except OSError:
-        print(f"ERROR: While loading model at {path}")
-        return
+    # read the model file
+    data = read_file(path)
 
     # dict obtained by parsing the JSON format in the file
     model = loads(data)
