@@ -30,4 +30,4 @@ jobs:
     - name: Test with unittests
       run: |
         cd src
-        python -u src/tests.py
+        python -u tests.py
