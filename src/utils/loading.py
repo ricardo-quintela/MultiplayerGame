@@ -1,4 +1,5 @@
 from json import loads
+import logging
 
 from inverseKinematics import Skeleton, Bone
 
@@ -14,11 +15,11 @@ def read_file(path: str):
     """
     # read the contents of the file
     try:
-        with open(path, "r") as model_file:
+        with open(path, "r", encoding="utf-8") as model_file:
             data = model_file.read()
 
     except OSError:
-        print(f"ERROR: While loading model at {path}")
+        logging.error("While loading model at %s", path)
         return
 
     return data
@@ -47,9 +48,18 @@ def load_skeleton(path: str) -> Skeleton:
     skeleton = Skeleton()
     skeleton.set_origin(origin)
 
-    # add the bones to the skeleton (they dont need to be in order because the skeleton object allows hash searching by the name of the bone/limb)
+    # add the bones to the skeleton (they dont need to be in order because
+    # the skeleton object allows hash searching by the name of the bone/limb)
     for bone in model["segments"]:
-        skeleton.add(Bone(bone["a"][0] + origin[0], bone["a"][1] + origin[1], bone["length"], bone["angle"], bone["name"]))
+        skeleton.add(
+            Bone(
+                bone["a"][0] + origin[0],
+                bone["a"][1] + origin[1],
+                bone["length"],
+                bone["angle"],
+                bone["name"]
+            )
+        )
 
 
     #? create limbs with connected bones
@@ -66,9 +76,9 @@ def load_skeleton(path: str) -> Skeleton:
             name = model["segments"][i]["name"]
 
             # create a limb object and attach them together
-            skeleton.newLimb(parent)
-            skeleton.getLimb(parent).add(skeleton.getBone(parent))
-            skeleton.getLimb(parent).add(skeleton.getBone(name))
+            skeleton.new_limb(parent)
+            skeleton.get_limb(parent).add(skeleton.get_bone(parent))
+            skeleton.get_limb(parent).add(skeleton.get_bone(name))
 
 
     #?anchor bones to others
@@ -82,7 +92,7 @@ def load_skeleton(path: str) -> Skeleton:
             anchor = model["segments"][i]["links"][1].split(".")
 
             # get the anchor bone
-            bone = skeleton.getBone(anchor[0])
+            bone = skeleton.get_bone(anchor[0])
 
             # get the point the bone is anchored to
             if anchor[1] == "a":
@@ -92,9 +102,9 @@ def load_skeleton(path: str) -> Skeleton:
 
             # try to anchor a limb, if the limb doesnt exist, then anchor a bone
             try:
-                skeleton.getLimb(model["segments"][i]["name"]).fixate(point)
+                skeleton.get_limb(model["segments"][i]["name"]).fixate(point)
 
             except KeyError:
-                skeleton.getBone(model["segments"][i]["name"]).fixate(point)
+                skeleton.get_bone(model["segments"][i]["name"]).fixate(point)
 
     return skeleton

@@ -10,7 +10,7 @@ class Skeleton:
 
         A skeleton is a set of bones that can be customized and controlled all at once
         """
-        
+
         self.bones = list()
         self._names = dict()
 
@@ -46,7 +46,7 @@ class Skeleton:
         self.bones.append(bone)
 
 
-    def newLimb(self, name: str = ""):
+    def new_limb(self, name: str = ""):
         """Adds a new limb to the skeleton
 
         Args:
@@ -62,7 +62,7 @@ class Skeleton:
         self.limbs.append(Limb(name))
 
 
-    def getBone(self, name: str) -> Bone:
+    def get_bone(self, name: str) -> Bone:
         """Returns a bone on the skeleton by the given name
 
         Args:
@@ -78,7 +78,7 @@ class Skeleton:
         return self.bones[self._names[name]]
 
 
-    def getLimb(self, name: str) -> Limb:
+    def get_limb(self, name: str) -> Limb:
         """Returns a limb on the skeleton by the given name
 
         Args:
@@ -129,7 +129,7 @@ class Skeleton:
 
         for limb in self._limbs_names:
             string += limb + ":\n"
-            for bone in self.getLimb(limb).bones:
+            for bone in self.get_limb(limb).bones:
                 string += "\t" + bone.name + "\n"
                 bones.remove(bone.name)
 

@@ -1,3 +1,4 @@
+# pylint: disable=maybe-no-member
 from guiElements.window import WindowEvent
 from pygame.key import get_pressed
 from pygame import K_0, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9, K_LCTRL, K_LSHIFT, K_RCTRL, K_RSHIFT, K_SPACE, K_a, K_b, K_c, K_d, K_e, K_f, K_g, K_h, K_i, K_j, K_k, K_l, K_m, K_n, K_o, K_p, K_q, K_r, K_s, K_t, K_u, K_v, K_w, K_x, K_y, K_z, K_ESCAPE
@@ -51,7 +52,7 @@ class GameEvents(WindowEvent):
             "rshift": K_RSHIFT
         }
 
-    
+
     def eventsCheck(self):
         super().eventsCheck()
 
@@ -75,7 +76,8 @@ class GameEvents(WindowEvent):
             key (str): the key to be checked
 
         Raises:
-            KeyError: If the key is not in the dict of preset keys or if the eventsCheck method hasn't been called first
+            KeyError: If the key is not in the dict of preset keys
+            or if the eventsCheck method hasn't been called first
 
         Returns:
             bool: True if its being pressed, False otherwise

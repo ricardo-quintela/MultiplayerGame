@@ -1,3 +1,4 @@
+import logging
 from pygame import Rect, Surface, Vector2
 from pygame.draw import rect
 
@@ -54,7 +55,7 @@ class Entity:
             self.direction = -1
             if self.vel.x < -self.max_vel_x:
                 self.vel.x = -self.max_vel_x
-                
+
         elif vel[0] > 0:
             self.direction = 1
             if self.vel.x > self.max_vel_x:
@@ -76,7 +77,7 @@ class Entity:
         # update the hitbox pos values since it doesnt allow the link with a muttable object
         self.hitbox.midbottom = self.pos
 
-        #print(self.pos, self.vel, self.acc, (self.hitbox.x, self.hitbox.y))
+        logging.debug("POS: %s, VEL: %s HITBOX: (%s, %s)", self.pos, self.vel, self.hitbox.x, self.hitbox.y)
 
 
 
@@ -106,14 +107,14 @@ class Entity:
 
                 min_dist = min(distances, key=distances.get)
 
-                # print("DISTS:", distances, "\nCOLLIDED: ", min_dist, sep="")
+                logging.debug("DISTS: %s\nCOLLIDED: %s", distances, min_dist)
 
                 # collision handeling
                 if min_dist == "top":
                     self.hitbox.bottom = block.hitbox.top
                     self.vel.y = 0
                     self.is_jumping = False
-                    
+
                     # calculate friction when the entity is not moving
                     if not self.is_moving:
 
@@ -133,7 +134,7 @@ class Entity:
                 else:
                     self.hitbox.top = block.hitbox.bottom
                     self.vel.y = 0
-                
+
                 self.pos.update(self.hitbox.midbottom)
 
 
@@ -144,5 +145,10 @@ class Entity:
             canvas (Surface): the canvas where to draw the rectangle on
         """
 
-        rect(canvas, "blue", (self.hitbox.x, self.hitbox.y, self.hitbox.width, self.hitbox.height), 2)
+        rect(
+            canvas,
+            "blue",
+            (self.hitbox.x, self.hitbox.y, self.hitbox.width, self.hitbox.height),
+            2
+        )
     

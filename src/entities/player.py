@@ -1,9 +1,9 @@
-from math import sqrt, sin, cos
+
 from pygame import Surface, Vector2
-from pygame.time import get_ticks
 from config import ENTITIES, ANIMATIONS
 
 from utils import load_skeleton
+from utils import MovementKeys
 from .entity import Entity
 
 class Player(Entity):
@@ -11,7 +11,7 @@ class Player(Entity):
         """Constructor of the class Player
         """
         super().__init__(hitbox_size, has_gravity=True)
-        
+
         self.model = load_skeleton("skeleton.json")
 
 
@@ -21,7 +21,7 @@ class Player(Entity):
         self.leg_l = Vector2(self.pos)
         self.leg_r = Vector2(self.pos)
 
-        self.hip = self.model.getLimb("coxa_e").anchor
+        self.hip = self.model.get_limb("coxa_e").anchor
 
         self.current_leg = 0
 
@@ -74,7 +74,7 @@ class Player(Entity):
         return target_leg_pos
 
 
-    
+
     def move_legs(self, colliders: list):
         """Moves the legs using procedural movement calculation
         algorithms
@@ -101,7 +101,7 @@ class Player(Entity):
         self.target_leg_pos.update(self.calculate_target_pos(colliders, self.pos, self.direction))
 
         # se a distancia da anca até ao pe for menor que o tamanho da perna: lerp = target pos
-        if (self.hip - self.legs[self.current_leg]).length() > self.model.getLimb("coxa_e").size:
+        if (self.hip - self.legs[self.current_leg]).length() > self.model.get_limb("coxa_e").size:
 
             self.lerps[self.current_leg].update(self.target_leg_pos)
             self.current_leg = (self.current_leg + 1) % 2
@@ -117,9 +117,7 @@ class Player(Entity):
 
 
 
-
-    
-    def move(self, movement_keys: dict):
+    def move(self, movement_keys: MovementKeys):
         """Checks for movement input and gives the player
         a velocity vector based on the movement direction
 
@@ -139,14 +137,10 @@ class Player(Entity):
             super().move((0,-ENTITIES["JUMP_HEIGHT"]))
             self.is_jumping = True
 
-
-
-
-
     def update(self, colliders: list):
         """Makes the necessary computations to update the physics of the player
         """
-        vector = self.model.origin - self.model.getBone("tronco").a
+        vector = self.model.origin - self.model.get_bone("tronco").a
 
         # calculate position based on velocity
         super().update()
@@ -159,15 +153,16 @@ class Player(Entity):
 
         #? updates the player model bones
 
-        # move the origin of the model to the position of the hitbox and update the anchor bone as well
+        # move the origin of the model to the position of
+        # the hitbox and update the anchor bone as well
         self.model.set_origin(self.pos)
-        self.model.getBone("tronco").a.update(self.model.origin - vector)
+        self.model.get_bone("tronco").a.update(self.model.origin - vector)
 
         # make the limbs follow specific points
-        self.model.getLimb("coxa_e").follow(self.leg_l, self.direction)
-        self.model.getLimb("coxa_d").follow(self.leg_r, self.direction)
-        self.model.getLimb("antebraco_e").follow(self.hitbox.midleft, -self.direction)
-        self.model.getLimb("antebraco_d").follow(self.hitbox.midright, -self.direction)
+        self.model.get_limb("coxa_e").follow(self.leg_l, self.direction)
+        self.model.get_limb("coxa_d").follow(self.leg_r, self.direction)
+        self.model.get_limb("antebraco_e").follow(self.hitbox.midleft, -self.direction)
+        self.model.get_limb("antebraco_d").follow(self.hitbox.midright, -self.direction)
 
         # update the skeleton object
         self.model.update()

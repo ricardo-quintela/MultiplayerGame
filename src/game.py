@@ -1,6 +1,6 @@
 from guiElements.window import Window
-from pygame import Vector2
 from events import GameEvents
+from utils import MovementKeys
 
 from pygame.draw import circle
 
@@ -54,7 +54,7 @@ class Game:
         for collider in self.colliders:
             collider.show_hitbox(self.root.canvas)
 
-
+        #* DEBUGGING
         circle(self.root.canvas, "green", self.player.target_leg_pos, 4)
         circle(self.root.canvas, "blue", self.player.lerp_l, 4)
         circle(self.root.canvas, "cyan", self.player.lerp_r, 4)
@@ -63,11 +63,11 @@ class Game:
             circle(self.root.canvas, "orange", k, 4)
 
         circle(self.root.canvas, "black", self.player.legs[self.player.current_leg], 4)
-            
+
         self.root.update()
 
 
-    
+
     def mainloop(self):
         """Main loop of the game
         """
@@ -77,11 +77,11 @@ class Game:
 
             #! EVENTS
             self.events.eventsCheck()
-            movement_keys = {
+            movement_keys: MovementKeys = {
                 "left": self.events.keyIsPressed("a"),
                 "right": self.events.keyIsPressed("d"),
                 "jump": self.events.keyIsPressed("space")
-                }
+            }
 
 
             #! PLAYER

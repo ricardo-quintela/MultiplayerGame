@@ -17,7 +17,7 @@ class Bone:
             angle (float): the angle of the bone (degrees)
             name (str): the name of the bone
         """
-        
+
         self.a = Vector2(x, y)
 
         self.length = length
@@ -31,7 +31,7 @@ class Bone:
         self.calculate_b()
 
         # joint
-        self.isAnchored = False
+        self.is_anchored = False
         self.anchor = None
 
 
@@ -40,7 +40,9 @@ class Bone:
         """Calculates the B point of the bone based on the length and the angle
         """
 
-        self.b.update(self.a + Vector2(self.length * cos(radians(self.angle)), self.length * sin(radians(self.angle))))
+        self.b.update(
+            self.a + Vector2(self.length * cos(radians(self.angle)), self.length * sin(radians(self.angle)))
+        )
 
 
     def set_pos(self, pos: tuple):
@@ -62,26 +64,26 @@ class Bone:
         Args:
             target (list, Vector2): the point to anchor the joint to
         """
-        self.isAnchored = True
+        self.is_anchored = True
 
         self.anchor = target
 
 
 
-    def setRotation(self, angle: int):
+    def set_rotation(self, angle: int):
         """Set the rotation of the bone
 
         Args:
             angle (int): the angle of the bone
         """
         self.angle = angle
-        
+
 
     def update(self):
         """Updates the bone position
         """
 
-        if self.isAnchored:
+        if self.is_anchored:
             self.a.update(self.anchor)
 
         self.calculate_b()
