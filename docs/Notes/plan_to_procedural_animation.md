@@ -1,4 +1,4 @@
-# Plan
+# With Raycasting
 
 - [x] Cast a ray to find the target position
 - [x] Make the feet follow that position
@@ -18,3 +18,7 @@
 	* S.y = player.y
 
 - [x] set the lerp pos to the target pos is distance from hip to lerp is bigger than leg
+
+# With sinusoidal curve
+
+
