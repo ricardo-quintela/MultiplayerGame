@@ -12,12 +12,12 @@ class Entity:
         """Constructor of the class Entity
 
         Args:
-            hitbox_size (tuple): the size of the hitbox
+            hitbox_size (tuple): the size of the bounding_box
             hasGravity (bool): whether to enable gravity to the object or not. Defaults to True.
         """
         self.pos = Vector2(0,0)
 
-        self.hitbox = Rect((0,0), hitbox_size)
+        self.bounding_box = Rect((0,0), hitbox_size)
 
         # velocity
         self.vel = Vector2(0,0)
@@ -26,8 +26,10 @@ class Entity:
         self.max_vel_x = max_vel_x
         self.max_vel_y = max_vel_y
 
+        self.is_colliding = False
         self.is_moving = False
         self.is_jumping = False
+        self.is_climbing = False
 
         self.direction = 1
 
@@ -36,7 +38,7 @@ class Entity:
         """Sets the pos of the entity's midbottom to the given set of coordinates
 
         Args:
-            pos (tuple): the position where to place the hitbox on
+            pos (tuple): the position where to place the bounding_box on
         """
         self.pos.update(pos)
 
@@ -63,21 +65,33 @@ class Entity:
 
         self.is_moving = True
 
-
-    def update(self):
-        """Calculate the position based on the velocity
+    def calculate_position(self):
+        """Calculates the new position based on the velocity
         """
-
         # updating the vellocity
-        self.vel.y += PHYSICS["GRAVITY"]
+        if self.has_gravity and not self.is_climbing:
+            logging.debug("GRAVITY_CALCULATION")
+            self.vel.y += PHYSICS["GRAVITY"]
 
         # updating the position
         self.pos += self.vel
 
-        # update the hitbox pos values since it doesnt allow the link with a muttable object
-        self.hitbox.midbottom = self.pos
 
-        logging.debug("POS: %s, VEL: %s HITBOX: (%s, %s)", self.pos, self.vel, self.hitbox.x, self.hitbox.y)
+    def update(self):
+        """updates the position and the bounding box
+        """
+        self.calculate_position()
+
+        # update the bounding_box pos values since it doesnt allow the link with a muttable object
+        self.bounding_box.midbottom = self.pos
+
+        logging.debug(
+            "POS: %s, VEL: %s BOUNDING_BOX: (%s, %s)",
+            self.pos,
+            self.vel,
+            self.bounding_box.x,
+            self.bounding_box.y
+        )
 
 
 
@@ -87,31 +101,33 @@ class Entity:
         Args:
             colliders (list): the list of colliders in the level
         """
+        self.is_colliding = False
 
-        self.hitbox.center += self.vel
+        self.bounding_box.center += self.vel
 
         # iterate through colliders
         for block in colliders:
 
             # found a collision
-            if self.hitbox.colliderect(block.hitbox):
+            if self.bounding_box.colliderect(block.bounding_box):
+                self.is_colliding = True
 
 
                 # keys are block's sides
                 distances = {
-                    "top": abs(self.hitbox.bottom - block.hitbox.top),
-                    "left": abs(self.hitbox.right - block.hitbox.left),
-                    "right": abs(self.hitbox.left - block.hitbox.right),
-                    "bottom": abs(self.hitbox.top - block.hitbox.bottom)
+                    "top": abs(self.bounding_box.bottom - block.bounding_box.top),
+                    "left": abs(self.bounding_box.right - block.bounding_box.left),
+                    "right": abs(self.bounding_box.left - block.bounding_box.right),
+                    "bottom": abs(self.bounding_box.top - block.bounding_box.bottom)
                 }
 
                 min_dist = min(distances, key=distances.get)
 
-                logging.debug("DISTS: %s\nCOLLIDED: %s", distances, min_dist)
+                logging.debug("DISTS: %s COLLIDED: %s", distances, min_dist)
 
                 # collision handeling
                 if min_dist == "top":
-                    self.hitbox.bottom = block.hitbox.top
+                    self.bounding_box.bottom = block.bounding_box.top
                     self.vel.y = 0
                     self.is_jumping = False
 
@@ -126,20 +142,20 @@ class Entity:
 
 
                 elif min_dist == "left":
-                    self.hitbox.right = block.hitbox.left
+                    self.bounding_box.right = block.bounding_box.left
                     self.vel.x = 0
                 elif min_dist == "right":
-                    self.hitbox.left = block.hitbox.right
+                    self.bounding_box.left = block.bounding_box.right
                     self.vel.x = 0
                 else:
-                    self.hitbox.top = block.hitbox.bottom
+                    self.bounding_box.top = block.bounding_box.bottom
                     self.vel.y = 0
 
-                self.pos.update(self.hitbox.midbottom)
+                self.pos.update(self.bounding_box.midbottom)
 
 
     def show_hitbox(self, canvas: Surface):
-        """Draws a rectangle on the given canvas representing the hitbox of the entity
+        """Draws a rectangle on the given canvas representing the bounding_box of the entity
 
         Args:
             canvas (Surface): the canvas where to draw the rectangle on
@@ -148,7 +164,7 @@ class Entity:
         rect(
             canvas,
             "blue",
-            (self.hitbox.x, self.hitbox.y, self.hitbox.width, self.hitbox.height),
+            (self.bounding_box.x, self.bounding_box.y, self.bounding_box.width, self.bounding_box.height),
             2
         )
     

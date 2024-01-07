@@ -1,6 +1,9 @@
+import logging
 from guiElements.window import Window
 from events import GameEvents
 from utils import MovementKeys
+
+from config import ANIMATIONS
 
 from pygame.draw import circle
 
@@ -31,7 +34,7 @@ class Game:
         self.colliders.append(Block((500,370), (60, 30), 1))
 
 
-        self.player = Player((60,250))
+        self.player = Player((30,250)) # default 60,250
         self.player.set_pos((400,400))
 
 
@@ -56,13 +59,14 @@ class Game:
 
         #* DEBUGGING
         circle(self.root.canvas, "green", self.player.target_leg_pos, 4)
-        circle(self.root.canvas, "blue", self.player.lerp_l, 4)
-        circle(self.root.canvas, "cyan", self.player.lerp_r, 4)
+        circle(self.root.canvas, "green", self.player.pos, ANIMATIONS["LEG_TARGET"], 1)
+        # circle(self.root.canvas, "blue", self.player.lerp_l, 4)
+        # circle(self.root.canvas, "cyan", self.player.lerp_r, 4)
 
-        for k in self.player.keyframes:
-            circle(self.root.canvas, "orange", k, 4)
+        # for k in self.player.keyframes:
+        #     circle(self.root.canvas, "orange", k, 4)
 
-        circle(self.root.canvas, "black", self.player.legs[self.player.current_leg], 4)
+        # circle(self.root.canvas, "black", self.player.leg_targets[self.player.current_swing_leg], 4)
 
         self.root.update()
 
