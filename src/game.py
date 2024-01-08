@@ -58,7 +58,7 @@ class Game:
             collider.show_hitbox(self.root.canvas)
 
         #* DEBUGGING
-        circle(self.root.canvas, "green", self.player.target_leg_pos, 4)
+        circle(self.root.canvas, "green", self.player.leg_targets[self.player.current_swing_leg], 4)
         circle(self.root.canvas, "green", self.player.pos, ANIMATIONS["LEG_TARGET"], 1)
         # circle(self.root.canvas, "blue", self.player.lerp_l, 4)
         # circle(self.root.canvas, "cyan", self.player.lerp_r, 4)
