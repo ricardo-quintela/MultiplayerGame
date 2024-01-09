@@ -67,6 +67,7 @@ class Entity:
 
     def calculate_position(self):
         """Calculates the new position based on the velocity
+        also handles gravity calculations
         """
         # updating the vellocity
         if self.has_gravity and not self.is_climbing:
@@ -96,29 +97,27 @@ class Entity:
 
 
     def check_collisions(self, colliders: list):
-        """Handles collisions between this entity and blocks on a given list
+        """Handles collisions between this entity and colliders on a given list
 
         Args:
             colliders (list): the list of colliders in the level
         """
         self.is_colliding = False
 
-        self.bounding_box.center += self.vel
-
         # iterate through colliders
-        for block in colliders:
+        for collider in colliders:
 
             # found a collision
-            if self.bounding_box.colliderect(block.bounding_box):
+            if self.bounding_box.colliderect(collider.bounding_box):
                 self.is_colliding = True
 
 
-                # keys are block's sides
+                # keys are collider's sides
                 distances = {
-                    "top": abs(self.bounding_box.bottom - block.bounding_box.top),
-                    "left": abs(self.bounding_box.right - block.bounding_box.left),
-                    "right": abs(self.bounding_box.left - block.bounding_box.right),
-                    "bottom": abs(self.bounding_box.top - block.bounding_box.bottom)
+                    "top": abs(self.bounding_box.bottom - collider.bounding_box.top),
+                    "left": abs(self.bounding_box.right - collider.bounding_box.left),
+                    "right": abs(self.bounding_box.left - collider.bounding_box.right),
+                    "bottom": abs(self.bounding_box.top - collider.bounding_box.bottom)
                 }
 
                 min_dist = min(distances, key=distances.get)
@@ -127,7 +126,7 @@ class Entity:
 
                 # collision handeling
                 if min_dist == "top":
-                    self.bounding_box.bottom = block.bounding_box.top
+                    self.bounding_box.bottom = collider.bounding_box.top
                     self.vel.y = 0
                     self.is_jumping = False
 
@@ -136,19 +135,19 @@ class Entity:
 
                         # friction
                         if self.vel.x < 0:
-                            self.vel.x += block.friction
+                            self.vel.x += collider.friction
                         elif self.vel.x > 0:
-                            self.vel.x -= block.friction
+                            self.vel.x -= collider.friction
 
 
                 elif min_dist == "left":
-                    self.bounding_box.right = block.bounding_box.left
+                    self.bounding_box.right = collider.bounding_box.left
                     self.vel.x = 0
                 elif min_dist == "right":
-                    self.bounding_box.left = block.bounding_box.right
+                    self.bounding_box.left = collider.bounding_box.right
                     self.vel.x = 0
                 else:
-                    self.bounding_box.top = block.bounding_box.bottom
+                    self.bounding_box.top = collider.bounding_box.bottom
                     self.vel.y = 0
 
                 self.pos.update(self.bounding_box.midbottom)

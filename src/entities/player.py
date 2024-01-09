@@ -1,13 +1,13 @@
 import logging
 from typing import List
-from pygame import Surface, Vector2
-
 from math import cos, pi
 
-from config import ENTITIES, ANIMATIONS
+from pygame import Surface, Vector2
+
+from config import ENTITIES, ANIMATIONS, PHYSICS
 from utils import load_skeleton
 from utils import MovementKeys
-from blocks import Block
+from blocks import Collider
 from .entity import Entity
 
 KEYFRAME_STEP = (ANIMATIONS["LEG_TARGET"] * 2) / ANIMATIONS["KEYFRAMES"]
@@ -44,7 +44,7 @@ class Player(Entity):
 
 
 
-    def calculate_target_pos(self, colliders: List[Block], target_leg_pos: Vector2) -> Vector2:
+    def calculate_target_pos(self, colliders: List[Collider], target_leg_pos: Vector2) -> Vector2:
         """Calculates the target postion of the leg
 
         Args:
@@ -57,14 +57,16 @@ class Player(Entity):
         """
         self.leg_is_grounded[self.current_swing_leg] = False
 
-        for block in colliders:
+        for collider in colliders:
 
-            if self.pos.y + ANIMATIONS["LEG_TARGET_HEIGHT"] < block.bounding_box.top:
+            if self.pos.y - ANIMATIONS["LEG_TARGET_HEIGHT"] > collider.bounding_box.top:
+                logging.debug("WALL: %s", collider)
                 continue
 
-            if block.bounding_box.collidepoint(target_leg_pos):
+            if collider.bounding_box.collidepoint(target_leg_pos):
+                logging.debug("STEP: %s", collider)
                 self.leg_is_grounded[self.current_swing_leg] = True
-                return Vector2(target_leg_pos.x, block.bounding_box.top)
+                return Vector2(target_leg_pos.x, collider.bounding_box.top)
 
         return target_leg_pos
 
@@ -78,10 +80,14 @@ class Player(Entity):
             colliders (list): the list of colliders in the map
         """
 
-        if self.is_jumping:
+        if not self.is_moving:
+            for leg_target in self.leg_targets:
+                leg_target += self.vel
+                leg_target.y += PHYSICS["GRAVITY"] * 5
+                leg_target.update(self.calculate_target_pos(colliders, leg_target))
             return
 
-        if not self.is_moving:
+        if self.is_jumping:
             return
 
         self.current_keyframe += 1
@@ -92,18 +98,21 @@ class Player(Entity):
         target_leg_pos_x = self.pos.x + self.current_keyframe * KEYFRAME_STEP * self.direction
         target_leg_pos = Vector2(
             target_leg_pos_x,
-            self.pos.y - cos(self.cossine_step / COSSINE_RADIUS) * COSSINE_RADIUS
+            self.pos.y - cos(self.cossine_step / COSSINE_RADIUS) * ANIMATIONS["LEG_TARGET_HEIGHT"]
         )
 
 
-        if self.current_keyframe <= 0:
-            final_target_leg_pos = target_leg_pos
-        else:
-            final_target_leg_pos = self.calculate_target_pos(colliders, target_leg_pos)
+        # we only calculate the collisions once we reach
+        # the middle of the animation to spare computing time
+        final_target_leg_pos = self.calculate_target_pos(colliders, target_leg_pos)
 
+
+        # update the leg target position
         self.leg_targets[self.current_swing_leg].update(final_target_leg_pos)
 
 
+        # whenever we hit a step or we reach the end of the
+        # animation, we change the leg and reset the animation
         if self.leg_is_grounded[self.current_swing_leg] or self.current_keyframe == ANIMATIONS["KEYFRAMES"] / 2:
             self.current_swing_leg = (self.current_swing_leg + 1) % 2
             self.current_keyframe = -ANIMATIONS["KEYFRAMES"] / 2
@@ -115,9 +124,8 @@ class Player(Entity):
             self.current_keyframe,
             self.current_swing_leg,
             final_target_leg_pos,
-            cos(target_leg_pos_x / COSSINE_RADIUS) * COSSINE_RADIUS
+            cos(target_leg_pos_x / COSSINE_RADIUS) * ANIMATIONS["LEG_TARGET_HEIGHT"]
         )
-
 
 
     def move(self, movement_keys: MovementKeys):
@@ -139,7 +147,8 @@ class Player(Entity):
             super().move((0,-ENTITIES["JUMP_HEIGHT"]))
             self.is_jumping = True
 
-    def update(self, colliders: List[Block]):
+
+    def update(self, colliders: List[Collider]):
         """Makes the necessary computations to update the physics of the player
         """
         self.is_climbing = False
@@ -150,15 +159,15 @@ class Player(Entity):
         #? LEG ANIMATION
         self.move_legs(colliders)
 
-        # calculate position based on velocity
-        super().update()
-
-
         #? hitbox y lifting based on y of leg
         if self.is_moving and self.leg_is_grounded[(self.current_swing_leg + 1) % 2] and self.leg_targets[(self.current_swing_leg + 1) % 2].y < self.pos.y:
             logging.debug("(IS_CLIMBING) NEW_Y: %s", self.bounding_box.bottom)
             self.is_climbing = True
             self.vel.y -= ANIMATIONS["LEG_CLIMBING_ACC"]
+
+
+        # calculate position based on velocity
+        super().update()
 
         #? COLLISIONS
         self.check_collisions(colliders)

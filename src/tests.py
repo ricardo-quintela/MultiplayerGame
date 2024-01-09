@@ -5,7 +5,7 @@ from pygame import Rect, Vector2
 
 from utils import load_skeleton, read_file
 from entities import Player
-from blocks import Block
+from blocks import Collider
 
 
 class TestLoading(unittest.TestCase):
@@ -28,11 +28,11 @@ class TestPlayer(unittest.TestCase):
     # calculate leg target position
     def test_calculate_target_pos(self):
 
-        blocks = [Block((100,100), (100,100), 1)]
+        colliders = [Collider((100,100), (100,100), 1)]
 
-        self.assertEqual(Player.calculate_target_pos(None, blocks, Vector2(90,110), 1), Vector2(140,100))   # collision and can lift leg up
-        self.assertEqual(Player.calculate_target_pos(None, blocks, Vector2(40,40), 1), Vector2(90,40))      # no collision 
-        self.assertEqual(Player.calculate_target_pos(None, blocks, Vector2(160,200), 1), Vector2(210, 200)) # collision but cant lift leg up
+        self.assertEqual(Player.calculate_target_pos(None, colliders, Vector2(90,110), 1), Vector2(140,100))   # collision and can lift leg up
+        self.assertEqual(Player.calculate_target_pos(None, colliders, Vector2(40,40), 1), Vector2(90,40))      # no collision 
+        self.assertEqual(Player.calculate_target_pos(None, colliders, Vector2(160,200), 1), Vector2(210, 200)) # collision but cant lift leg up
 
 
 

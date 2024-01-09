@@ -1,1 +1,1 @@
-from .block import Block
+from .collider import Collider

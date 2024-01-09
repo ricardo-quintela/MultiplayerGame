@@ -9,9 +9,9 @@
 
 * Place the S point in the desired start position
 * While S.y > player.y
-	* For each block
-		* If S collides with the block and block.top < initial S.y
-			* S.y = block.top
+	* For each collider
+		* If S collides with the collider and collider.top < initial S.y
+			* S.y = collider.top
 			* break both loops
 		* S.y += STEP_CONSTANT
 * If S.y < player.y
