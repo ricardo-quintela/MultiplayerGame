@@ -64,32 +64,32 @@ def load_skeleton(path: str) -> Skeleton:
 
     #? create limbs with connected bones
     # iterate through all the segments
-    for i in range(len(model["segments"])):
+    for segment in model["segments"]:
 
         # if the segment is linked to some other
-        if model["segments"][i]["links"][0]:
+        if segment["links"][0]:
 
             # get the segment that is linked to it
-            parent = model["segments"][i]["links"][0]
+            parent = segment["links"][0].split(".") if segment["links"][0] is not None else None
 
             # and the name of the bone
-            name = model["segments"][i]["name"]
+            name = segment["name"]
 
             # create a limb object and attach them together
-            skeleton.new_limb(parent)
-            skeleton.get_limb(parent).add(skeleton.get_bone(parent))
-            skeleton.get_limb(parent).add(skeleton.get_bone(name))
+            skeleton.new_limb(parent[0])
+            skeleton.get_limb(parent[0]).set_master(skeleton.get_bone(parent[0]))
+            skeleton.get_limb(parent[0]).set_slave(skeleton.get_bone(name), parent[1])
 
 
     #?anchor bones to others
     # iterate through all the segments
-    for i in range(len(model["segments"])):
+    for segment in model["segments"]:
 
         # if the segment is anchored to some other
-        if model["segments"][i]["links"][1]:
+        if segment["links"][1]:
 
             # get the information about which bone and the point its anchored to
-            anchor = model["segments"][i]["links"][1].split(".")
+            anchor = segment["links"][1].split(".")
 
             # get the anchor bone
             bone = skeleton.get_bone(anchor[0])
@@ -102,9 +102,9 @@ def load_skeleton(path: str) -> Skeleton:
 
             # try to anchor a limb, if the limb doesnt exist, then anchor a bone
             try:
-                skeleton.get_limb(model["segments"][i]["name"]).fixate(point)
+                skeleton.get_limb(segment["name"]).fixate(point)
 
             except KeyError:
-                skeleton.get_bone(model["segments"][i]["name"]).fixate(point)
+                skeleton.get_bone(segment["name"]).fixate(point, anchor[2])
 
     return skeleton

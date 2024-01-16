@@ -161,6 +161,7 @@ class Player(Entity):
 
         #? hitbox y lifting based on y of leg
         if self.is_moving and self.leg_is_grounded[(self.current_swing_leg + 1) % 2] and self.leg_targets[(self.current_swing_leg + 1) % 2].y < self.pos.y:
+
             logging.debug("(IS_CLIMBING) NEW_Y: %s", self.bounding_box.bottom)
             self.is_climbing = True
             self.vel.y -= ANIMATIONS["LEG_CLIMBING_ACC"]

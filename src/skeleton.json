@@ -37,7 +37,7 @@
             "length": 53.85164807134504,
             "links": [
                 null,
-                "tronco.b"
+                "tronco.b.a"
             ],
             "isAnchor": false
         },
@@ -55,7 +55,7 @@
             "length": 53.85164807134504,
             "links": [
                 null,
-                "tronco.b"
+                "tronco.b.a"
             ],
             "isAnchor": false
         },
@@ -72,7 +72,7 @@
             "angle": 68.19859051364818,
             "length": 53.85164807134504,
             "links": [
-                "coxa_d",
+                "coxa_d.b",
                 null
             ],
             "isAnchor": false
@@ -90,7 +90,7 @@
             "angle": 111.80140948635182,
             "length": 53.85164807134504,
             "links": [
-                "coxa_e",
+                "coxa_e.b",
                 null
             ],
             "isAnchor": false
@@ -109,7 +109,7 @@
             "length": 64.03124237432849,
             "links": [
                 null,
-                "tronco.a"
+                "tronco.a.a"
             ],
             "isAnchor": false
         },
@@ -127,7 +127,7 @@
             "length": 64.03124237432849,
             "links": [
                 null,
-                "tronco.a"
+                "tronco.a.a"
             ],
             "isAnchor": false
         },
@@ -145,7 +145,7 @@
             "length": 30.0,
             "links": [
                 null,
-                "tronco.a"
+                "tronco.a.a"
             ],
             "isAnchor": false
         },
@@ -162,7 +162,7 @@
             "angle": 101.30993247402021,
             "length": 50.99019513592785,
             "links": [
-                "antebraco_e",
+                "antebraco_e.b",
                 null
             ],
             "isAnchor": false
@@ -180,7 +180,7 @@
             "angle": 78.69006752597979,
             "length": 50.99019513592785,
             "links": [
-                "antebraco_d",
+                "antebraco_d.b",
                 null
             ],
             "isAnchor": false

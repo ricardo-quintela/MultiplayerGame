@@ -1,10 +1,11 @@
 from math import acos, atan2, degrees, pi, cos, sin
+from typing import List
 
 from pygame import Surface, Vector2
 
 from .bone import Bone
 
-from .exceptions import LimbTooLongException
+from .exceptions import LimbTooLongException, PointNotFoundException
 
 
 class Limb:
@@ -19,13 +20,16 @@ class Limb:
             name (str, optional): the name of the limb. Defaults to "".
         """
 
-        self.bones = list()
+        self.bones: List[Bone] = list()
 
         self.name = name
 
         self.anchor = None
 
         self.size = 0
+
+        self.attachment = None
+        self.follow_point = None
 
 
     def set_name(self, name: str):
@@ -51,6 +55,38 @@ class Limb:
         self.bones.append(bone)
 
         self.size += bone.length
+
+
+    def set_master(self, bone: Bone):
+        """Adds a bone to the limb
+
+        Args:
+            bone (Bone): the bone to add
+        """
+
+        self.add(bone)
+
+
+    def set_slave(self, bone: Bone, follow_point_name: str):
+        """Adds a bone to the limb
+
+        Args:
+            bone (Bone): the bone to add
+        """
+
+        self.add(bone)
+
+        if follow_point_name == "a":
+            self.follow_point = self.bones[0].a
+            self.attachment = self.bones[0].b
+
+        elif follow_point_name == "b":
+            self.follow_point = self.bones[0].b
+            self.attachment = self.bones[0].a
+
+        else:
+            raise PointNotFoundException(f"No such point '{follow_point_name}' on bone")
+
 
 
     def fixate(self, anchor):
@@ -119,7 +155,7 @@ class Limb:
         self.bones[0].set_rotation(degrees(theta1))
         self.bones[0].calculate_b()
 
-        self.bones[1].set_pos(self.bones[0].b)
+        self.bones[1].set_pos(self.follow_point)
         self.bones[1].set_rotation(degrees(pi - (2 * pi - theta2 - theta1)))
         self.bones[1].calculate_b()
 
@@ -133,7 +169,7 @@ class Limb:
             bone.update()
 
         if self.anchor and self.bones:
-            self.bones[0].a.update(self.anchor)
+            self.attachment.update(self.anchor)
 
 
     def blit(self, canvas: Surface):

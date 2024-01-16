@@ -1,3 +1,5 @@
+from typing import List, Dict
+
 from pygame import Surface, Vector2
 
 from .bone import Bone
@@ -11,11 +13,11 @@ class Skeleton:
         A skeleton is a set of bones that can be customized and controlled all at once
         """
 
-        self.bones = list()
-        self._names = dict()
+        self.bones: List[Bone] = list()
+        self._names: Dict[str ,int] = dict()
 
-        self.limbs = list()
-        self._limbs_names = dict()
+        self.limbs: List[Limb] = list()
+        self._limbs_names: Dict[str ,int] = dict()
 
         self.origin = Vector2(0,0)
 
