@@ -1,9 +1,10 @@
-from typing import List, Dict
+from typing import List, Dict, Sequence
 
 from pygame import Surface, Vector2
 
 from .bone import Bone
 from .limb import Limb
+from .types import JSONSkeleton
 
 class Skeleton:
 
@@ -22,12 +23,15 @@ class Skeleton:
         self.origin = Vector2(0,0)
 
 
-    def set_origin(self, pos: tuple):
+    def set_origin(self, pos: Sequence[int]):
         """Updates the origin of the skeleton
 
         Args:
             pos (tuple): the position where to move the origin to
         """
+        if len(pos) != 2:
+            raise IndexError(f"Received an invalid position - length: '{pos}'")
+
         self.origin.update(pos)
 
 
@@ -139,4 +143,83 @@ class Skeleton:
             string += bone + "\n"
 
         return string
-        
+
+
+    @classmethod
+    def from_json(cls, json_model: JSONSkeleton):
+        """Loads the skeleton model from the given json
+
+        Args:
+            json_model (JSONSkeleton): the json skeleton
+
+        Returns:
+            Skeleton: the Skeleton instance
+        """
+
+        # all the bones are placed relative to the origin
+        origin = json_model["origin"]
+
+        # create a skeleton object
+        skeleton = cls()
+        skeleton.set_origin(origin)
+
+        # add the bones to the skeleton (they dont need to be in order because
+        # the skeleton object allows hash searching by the name of the bone/limb)
+        for bone in json_model["segments"]:
+            skeleton.add(
+                Bone(
+                    bone["a"][0] + origin[0],
+                    bone["a"][1] + origin[1],
+                    bone["length"],
+                    bone["angle"],
+                    bone["name"]
+                )
+            )
+
+
+        #? create limbs with connected bones
+        # iterate through all the segments
+        for segment in json_model["segments"]:
+
+            # if the segment is linked to some other
+            if segment["links"][0]:
+
+                # get the segment that is linked to it
+                parent = segment["links"][0].split(".") if segment["links"][0] is not None else None
+
+                # and the name of the bone
+                name = segment["name"]
+
+                # create a limb object and attach them together
+                skeleton.new_limb(parent[0])
+                skeleton.get_limb(parent[0]).set_master(skeleton.get_bone(parent[0]))
+                skeleton.get_limb(parent[0]).set_slave(skeleton.get_bone(name), parent[1])
+
+
+        #?anchor bones to others
+        # iterate through all the segments
+        for segment in json_model["segments"]:
+
+            # if the segment is anchored to some other
+            if segment["links"][1]:
+
+                # get the information about which bone and the point its anchored to
+                anchor = segment["links"][1].split(".")
+
+                # get the anchor bone
+                bone = skeleton.get_bone(anchor[0])
+
+                # get the point the bone is anchored to
+                if anchor[1] == "a":
+                    point = bone.a
+                else:
+                    point = bone.b
+
+                # try to anchor a limb, if the limb doesnt exist, then anchor a bone
+                try:
+                    skeleton.get_limb(segment["name"]).fixate(point)
+
+                except KeyError:
+                    skeleton.get_bone(segment["name"]).fixate(point, anchor[2])
+
+        return skeleton

@@ -1,13 +1,15 @@
 import logging
 from typing import List
+from json import loads
 from math import cos, pi
 
 from pygame import Surface, Vector2
 
 from config import ENTITIES, ANIMATIONS, PHYSICS
-from utils import load_skeleton
 from utils import MovementKeys
 from blocks import Collider
+from inverseKinematics import Skeleton
+
 from .entity import Entity
 
 KEYFRAME_STEP = (ANIMATIONS["LEG_TARGET"] * 2) / ANIMATIONS["KEYFRAMES"]
@@ -19,7 +21,10 @@ class Player(Entity):
         """
         super().__init__(hitbox_size, has_gravity=True)
 
-        self.model = load_skeleton("skeleton.json")
+        with open("skeleton.json", "r", encoding="utf-8") as model_file:
+            json_model = loads(model_file.read())
+
+        self.model = Skeleton.from_json(json_model)
 
         self.leg_l_target = Vector2(self.pos)
         self.leg_r_target = Vector2(self.pos)

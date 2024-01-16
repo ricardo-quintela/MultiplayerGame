@@ -1,2 +1,2 @@
-from .loading import read_file, load_skeleton
 from .data_structures import MovementKeys
+from .file_worker import read_file
