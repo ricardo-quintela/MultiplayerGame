@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import Dict, List
 from json import loads
 from math import cos, pi
 
@@ -9,11 +9,12 @@ from config import ENTITIES, ANIMATIONS, PHYSICS
 from utils import MovementKeys
 from blocks import Collider
 from inverseKinematics import Skeleton
+from .animation import Animation
 
 from .entity import Entity
 
-KEYFRAME_STEP = (ANIMATIONS["LEG_TARGET"] * 2) / ANIMATIONS["KEYFRAMES"]
-COSSINE_RADIUS = 2 * ANIMATIONS["LEG_TARGET"] / pi
+KEYFRAME_STEP: float = (ANIMATIONS["LEG_TARGET"] * 2) / ANIMATIONS["KEYFRAMES"]
+COSSINE_RADIUS: float = 2 * ANIMATIONS["LEG_TARGET"] / pi
 
 class Player(Entity):
     def __init__(self, hitbox_size) -> None:
@@ -21,24 +22,27 @@ class Player(Entity):
         """
         super().__init__(hitbox_size, has_gravity=True)
 
+        # model initialization
         with open("skeleton.json", "r", encoding="utf-8") as model_file:
             json_model = loads(model_file.read())
 
         self.model = Skeleton.from_json(json_model)
 
-        self.leg_l_target = Vector2(self.pos)
-        self.leg_r_target = Vector2(self.pos)
-
-        self.hip = self.model.get_limb("coxa_e").anchor
-
+        # animation initialization
         self.current_swing_leg = 0
 
+        self.leg_l_target = Vector2(self.pos)
+        self.leg_r_target = Vector2(self.pos)
         self.leg_targets = [self.leg_l_target, self.leg_r_target]
 
-        self.current_keyframe = -ANIMATIONS["KEYFRAMES"] / 2
-        self.cossine_step = -self.direction * ANIMATIONS["LEG_TARGET"] / 2 * KEYFRAME_STEP
+        # keyframe setup
+        self.current_keyframe = 0
+        self.keyframe_step = -self.direction * ANIMATIONS["LEG_TARGET"] / 2 * KEYFRAME_STEP
 
         self.leg_is_grounded = [False, False]
+
+        self.animations: Dict[str, Animation] = dict()
+        self.load_animations()
 
 
     def set_pos(self, pos: tuple):
@@ -46,6 +50,28 @@ class Player(Entity):
 
         self.leg_l_target.update(pos)
         self.leg_r_target.update(pos)
+
+
+    def load_animations(self):
+        # TODO: load animations
+
+        animation = Animation()
+        animation.name = "walking"
+        animation.num_keyframes = 10
+
+        for i in range(animation.num_keyframes):
+            step = self.keyframe_step + KEYFRAME_STEP * i
+            animation.keyframes.append(
+                {
+                    "coxa_e": (
+                        Vector2(step, -cos(step / COSSINE_RADIUS) * ANIMATIONS["LEG_TARGET_HEIGHT"]),
+                        1
+                    )
+                }
+            )
+            logging.debug("Loaded '%s' animation ('%s' keyframes)", animation.name, animation.num_keyframes)
+
+        self.animations[animation.name] = animation
 
 
 
@@ -77,60 +103,32 @@ class Player(Entity):
 
 
 
-    def move_legs(self, colliders: list):
-        """Moves the legs using procedural movement calculation
-        algorithms
+    def animate(self, animation_name: str, colliders: list):
+        """Animates each model bone with a list of points
+        on the given animation
 
         Args:
+            animation_name (str): the name of the current animation
             colliders (list): the list of colliders in the map
         """
 
-        if not self.is_moving:
-            for leg_target in self.leg_targets:
-                leg_target += self.vel
-                leg_target.y += PHYSICS["GRAVITY"] * 5
-                leg_target.update(self.calculate_target_pos(colliders, leg_target))
-            return
-
-        if self.is_jumping:
-            return
-
         self.current_keyframe += 1
-        self.cossine_step += KEYFRAME_STEP * self.direction
+        if self.current_keyframe == self.animations[animation_name].num_keyframes:
+            self.current_keyframe = 0
 
-        #! RAYCAST OF TARGET POS
-        # calculate the target position
-        target_leg_pos_x = self.pos.x + self.current_keyframe * KEYFRAME_STEP * self.direction
-        target_leg_pos = Vector2(
-            target_leg_pos_x,
-            self.pos.y - cos(self.cossine_step / COSSINE_RADIUS) * ANIMATIONS["LEG_TARGET_HEIGHT"]
-        )
+        keyframe = self.animations[animation_name].keyframes[self.current_keyframe]
+        for bone_name, target in keyframe.items():
+            # try to get a limb
+            bone = self.model.get_limb(bone_name)
 
+            # if it doesnt correspond to a limb then get the bone instead
+            if bone is None:
+                bone = self.model.get_bone(bone_name)
 
-        # we only calculate the collisions once we reach
-        # the middle of the animation to spare computing time
-        final_target_leg_pos = self.calculate_target_pos(colliders, target_leg_pos)
-
-
-        # update the leg target position
-        self.leg_targets[self.current_swing_leg].update(final_target_leg_pos)
+            bone.follow(self.pos + target[0], target[1])
+            logging.debug("ANIMATION_UPDATE: current_keyframe: %s | bone: %s | target_pos: %s | direction: %s", self.current_keyframe, bone_name, self.pos + target[0], target[1])
 
 
-        # whenever we hit a step or we reach the end of the
-        # animation, we change the leg and reset the animation
-        if self.leg_is_grounded[self.current_swing_leg] or self.current_keyframe == ANIMATIONS["KEYFRAMES"] / 2:
-            self.current_swing_leg = (self.current_swing_leg + 1) % 2
-            self.current_keyframe = -ANIMATIONS["KEYFRAMES"] / 2
-            self.cossine_step = -self.direction * ANIMATIONS["LEG_TARGET"] / 2 * KEYFRAME_STEP
-
-
-        logging.debug(
-            "CURRENT_KEYFRAME: %s | CURRENT_LEG: %s | FINAL_TARGET_LEG_POS: %s | COSSINE: %s",
-            self.current_keyframe,
-            self.current_swing_leg,
-            final_target_leg_pos,
-            cos(target_leg_pos_x / COSSINE_RADIUS) * ANIMATIONS["LEG_TARGET_HEIGHT"]
-        )
 
 
     def move(self, movement_keys: MovementKeys):
@@ -162,7 +160,7 @@ class Player(Entity):
         vector = self.model.origin - self.model.get_bone("tronco").a
 
         #? LEG ANIMATION
-        self.move_legs(colliders)
+        self.animate("walking", colliders)
 
         #? hitbox y lifting based on y of leg
         if self.is_moving and self.leg_is_grounded[(self.current_swing_leg + 1) % 2] and self.leg_targets[(self.current_swing_leg + 1) % 2].y < self.pos.y:
@@ -186,12 +184,6 @@ class Player(Entity):
         # the bounding_box and update the anchor bone as well
         self.model.set_origin(self.pos)
         self.model.get_bone("tronco").a.update(self.model.origin - vector)
-
-        # make the limbs follow specific points
-        self.model.get_limb("coxa_e").follow(self.leg_l_target, self.direction)
-        self.model.get_limb("coxa_d").follow(self.leg_r_target, self.direction)
-        self.model.get_limb("antebraco_e").follow(self.bounding_box.midleft, -self.direction)
-        self.model.get_limb("antebraco_d").follow(self.bounding_box.midright, -self.direction)
 
         # update the skeleton object
         self.model.update()

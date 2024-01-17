@@ -1,4 +1,4 @@
-from typing import List, Dict, Sequence
+from typing import List, Dict, Sequence, Union
 
 from pygame import Surface, Vector2
 
@@ -80,11 +80,10 @@ class Skeleton:
         Returns:
             Bone: the bone on the skeleton
         """
-
         return self.bones[self._names[name]]
 
 
-    def get_limb(self, name: str) -> Limb:
+    def get_limb(self, name: str) -> Union[Limb, None]:
         """Returns a limb on the skeleton by the given name
 
         Args:
@@ -94,8 +93,10 @@ class Skeleton:
             KeyError: if the limb doenst exist in the skeleton
 
         Returns:
-            Limb: the limb on the skeleton
+            (Limb | None): the limb on the skeleton or None if the given name is not a limb
         """
+        if name not in self._limbs_names:
+            return
 
         return self.limbs[self._limbs_names[name]]
 
@@ -216,10 +217,13 @@ class Skeleton:
                     point = bone.b
 
                 # try to anchor a limb, if the limb doesnt exist, then anchor a bone
-                try:
-                    skeleton.get_limb(segment["name"]).fixate(point)
+                bone = skeleton.get_limb(segment["name"])
+                if bone is not None:
+                    bone.fixate(point)
+                    continue
 
-                except KeyError:
-                    skeleton.get_bone(segment["name"]).fixate(point, anchor[2])
+                bone = skeleton.get_bone(segment["name"])
+                bone.fixate(point, anchor[2])
+
 
         return skeleton

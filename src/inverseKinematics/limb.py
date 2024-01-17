@@ -101,7 +101,7 @@ class Limb:
 
 
 
-    def follow(self, target: tuple, direction: int = 1):
+    def follow(self, target: Vector2, direction: int = 1):
         if len(self.bones) > 2:
             raise LimbTooLongException("Too many bones on " + self.name)
         elif len(self.bones) < 2:

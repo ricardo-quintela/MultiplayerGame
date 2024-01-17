@@ -2,20 +2,21 @@ from typing import Dict, List, Tuple, TypedDict
 
 from pygame import Vector2
 
-JSONKeyframe = Dict[str, List[List[int, int], int]]
+JSONKeyframe = Dict[str, Tuple[Tuple[int], int]]
 
 Keyframe = Dict[str, Tuple[Vector2, int]]
 
 class JSONAnimation(TypedDict):
     keyframeNum: int
-    keyframes: List[JSONKeyframe]
+    keyframes: Tuple[JSONKeyframe]
 
 class Animation:
     """Stores the target points of an animation
     """
     def __init__(self) -> None:
+        self.name = ""
         self.num_keyframes = 0
-        self.keyframes: List[JSONKeyframe] = list()
+        self.keyframes: List[Keyframe] = list()
 
 
     @classmethod
@@ -43,3 +44,7 @@ class Animation:
             animation.keyframes.append(keyframe)
 
         return animation
+
+
+    def __repr__(self) -> str:
+        return f"Animation(name='{self.name}', num_keyframes='{self.num_keyframes}')"
