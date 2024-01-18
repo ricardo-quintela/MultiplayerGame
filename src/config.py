@@ -1,4 +1,4 @@
-from configparser import ConfigParser
+import yaml
 
 def load_config(path: str) -> tuple:
     """Loads the configuration fro the config file into memory
@@ -10,27 +10,20 @@ def load_config(path: str) -> tuple:
         tuple: the configs
     """
 
-    config = ConfigParser()
-    config.optionxform = str
-    config.read(path)
+    with open(path, "r", encoding="utf-8") as config_file:
+        config_data: dict = yaml.safe_load(config_file)
 
-    return dict(config)
+    return config_data
 
 
 
 if __name__ == "__main__":
-    print(load_config("config.cfg"))
+    print(load_config("config.yml"))
 
 else:
-    config = load_config("./config.cfg")
+    config = load_config("config.yml")
 
-    # turn the str values to tuples and integers
-    for section in config:
-        config[section] = dict(config[section])
-        for key, value in config[section].items():
-            config[section][key] = eval(value)
-
-    WINDOW = config["WINDOW"]
-    PHYSICS = config["PHYSICS"]
-    ENTITIES = config["ENTITIES"]
-    ANIMATIONS = config["ANIMATIONS"]
+    WINDOW = config["window"]
+    PHYSICS = config["physics"]
+    ENTITIES = config["entities"]
+    ANIMATIONS = config["animations"]
