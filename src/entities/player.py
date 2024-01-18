@@ -9,12 +9,12 @@ from config import ENTITIES, ANIMATIONS, PHYSICS
 from utils import MovementKeys
 from blocks import Collider
 from inverseKinematics import Skeleton
-from .animation import Animation
+from .animation import Animation, JSONAnimation
 
 from .entity import Entity
 
-KEYFRAME_STEP: float = (ANIMATIONS["LEG_TARGET"] * 2) / ANIMATIONS["KEYFRAMES"]
-COSSINE_RADIUS: float = 2 * ANIMATIONS["LEG_TARGET"] / pi
+KEYFRAME_STEP: float = (ANIMATIONS["leg_target"] * 2) / ANIMATIONS["keyframes"]
+COSSINE_RADIUS: float = 2 * ANIMATIONS["leg_target"] / pi
 
 class Player(Entity):
     def __init__(self, hitbox_size) -> None:
@@ -37,7 +37,7 @@ class Player(Entity):
 
         # keyframe setup
         self.current_keyframe = 0
-        self.keyframe_step = -self.direction * ANIMATIONS["LEG_TARGET"] / 2 * KEYFRAME_STEP
+        self.keyframe_step = -self.direction * ANIMATIONS["leg_target"] / 2 * KEYFRAME_STEP
 
         self.leg_is_grounded = [False, False]
 
@@ -55,23 +55,23 @@ class Player(Entity):
     def load_animations(self):
         # TODO: load animations
 
-        animation = Animation()
-        animation.name = "walking"
-        animation.num_keyframes = 10
+        animation_paths = ANIMATIONS["animation_paths"]["player"]
 
-        for i in range(animation.num_keyframes):
-            step = self.keyframe_step + KEYFRAME_STEP * i
-            animation.keyframes.append(
-                {
-                    "coxa_e": (
-                        Vector2(step, -cos(step / COSSINE_RADIUS) * ANIMATIONS["LEG_TARGET_HEIGHT"]),
-                        1
-                    )
-                }
+        for animation_name, animation_path in animation_paths.items():
+            logging.debug("Loading '%s' animation from '%s'", animation_name, animation_path)
+
+            with open(animation_path, "r", encoding="utf-8") as animation_file:
+                animation_json: JSONAnimation = loads(animation_file.read())
+
+            animation = Animation.from_json(animation_json)
+
+            self.animations[animation_name] = animation
+
+            logging.debug(
+                "Loaded '%s' animation ('%s' keyframes)",
+                animation_name,
+                animation.num_keyframes
             )
-            logging.debug("Loaded '%s' animation ('%s' keyframes)", animation.name, animation.num_keyframes)
-
-        self.animations[animation.name] = animation
 
 
 
@@ -90,7 +90,7 @@ class Player(Entity):
 
         for collider in colliders:
 
-            if self.pos.y - ANIMATIONS["LEG_TARGET_HEIGHT"] > collider.bounding_box.top:
+            if self.pos.y - ANIMATIONS["leg_target_height"] > collider.bounding_box.top:
                 logging.debug("WALL: %s", collider)
                 continue
 
@@ -125,7 +125,7 @@ class Player(Entity):
             if bone is None:
                 bone = self.model.get_bone(bone_name)
 
-            bone.follow(self.pos + target[0], target[1])
+            bone.follow(self.pos + target[0], target[1] * self.direction)
             logging.debug("ANIMATION_UPDATE: current_keyframe: %s | bone: %s | target_pos: %s | direction: %s", self.current_keyframe, bone_name, self.pos + target[0], target[1])
 
 
@@ -147,7 +147,7 @@ class Player(Entity):
             self.is_moving = False
 
         if not self.is_jumping and movement_keys["jump"]:
-            super().move((0,-ENTITIES["JUMP_HEIGHT"]))
+            super().move((0,-ENTITIES["jump_height"]))
             self.is_jumping = True
 
 
@@ -167,7 +167,7 @@ class Player(Entity):
 
             logging.debug("(IS_CLIMBING) NEW_Y: %s", self.bounding_box.bottom)
             self.is_climbing = True
-            self.vel.y -= ANIMATIONS["LEG_CLIMBING_ACC"]
+            self.vel.y -= ANIMATIONS["leg_climbing_acc"]
 
 
         # calculate position based on velocity

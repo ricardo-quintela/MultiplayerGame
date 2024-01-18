@@ -20,7 +20,7 @@ def main():
     pygame.init()
 
     logging.debug("Building window")
-    root = Window(WINDOW["SIZE"], WINDOW["FPS"])
+    root = Window(WINDOW["size"], WINDOW["fps"])
 
     logging.debug("Loading window events")
     events = GameEvents()

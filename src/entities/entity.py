@@ -8,7 +8,7 @@ from config import PHYSICS, ENTITIES
 
 class Entity:
 
-    def __init__(self, hitbox_size: tuple, has_gravity: bool = True, max_vel_x: int = ENTITIES["MAX_VEL_X"], max_vel_y: int = ENTITIES["MAX_VEL_Y"]) -> None:
+    def __init__(self, hitbox_size: tuple, has_gravity: bool = True, max_vel_x: int = ENTITIES["max_vel_x"], max_vel_y: int = ENTITIES["max_vel_y"]) -> None:
         """Constructor of the class Entity
 
         Args:
@@ -72,7 +72,7 @@ class Entity:
         # updating the vellocity
         if self.has_gravity and not self.is_climbing:
             logging.debug("GRAVITY_CALCULATION")
-            self.vel.y += PHYSICS["GRAVITY"]
+            self.vel.y += PHYSICS["gravity"]
 
         # updating the position
         self.pos += self.vel
