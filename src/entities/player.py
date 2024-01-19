@@ -142,3 +142,8 @@ class Player(Entity):
         """
 
         self.model.blit(canvas)
+
+        circle(canvas, "aqua", self.model.get_bone("perna_e").b, 4)
+        circle(canvas, "orange", self.model.get_bone("perna_d").b, 4)
+        circle(canvas, "aqua", self.model.get_bone("braco_e").b, 4)
+        circle(canvas, "orange", self.model.get_bone("braco_d").b, 4)

@@ -1,6 +1,6 @@
 window:
   size: [800,600]
-  fps: 30
+  fps: 5
 
 physics:
   gravity: 2
