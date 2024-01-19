@@ -59,8 +59,8 @@ class Game:
             collider.show_hitbox(self.root.canvas)
 
         #* DEBUGGING
-        circle(self.root.canvas, "green", self.player.leg_targets[0], 4)
-        circle(self.root.canvas, "cyan", self.player.leg_targets[1], 4)
+        circle(self.root.canvas, "green", self.player.model.origin, 4)
+        circle(self.root.canvas, "green", self.player.model.get_bone("tronco").a, 4)
 
         self.root.update()
 

@@ -1,11 +1,11 @@
 import logging
 from typing import Dict, List
 from json import loads
-from math import cos, pi
 
-from pygame import Surface, Vector2
+from pygame import Surface
+from pygame.draw import circle
 
-from config import ENTITIES, ANIMATIONS, PHYSICS
+from config import ENTITIES, ANIMATIONS, MODELS
 from utils import MovementKeys
 from blocks import Collider
 from inverseKinematics import Skeleton
@@ -13,8 +13,6 @@ from .animation import Animation, JSONAnimation
 
 from .entity import Entity
 
-KEYFRAME_STEP: float = (ANIMATIONS["leg_target"] * 2) / ANIMATIONS["keyframes"]
-COSSINE_RADIUS: float = 2 * ANIMATIONS["leg_target"] / pi
 
 class Player(Entity):
     def __init__(self, hitbox_size) -> None:
@@ -23,37 +21,23 @@ class Player(Entity):
         super().__init__(hitbox_size, has_gravity=True)
 
         # model initialization
-        with open("skeleton.json", "r", encoding="utf-8") as model_file:
+        with open(MODELS["player"], "r", encoding="utf-8") as model_file:
             json_model = loads(model_file.read())
 
         self.model = Skeleton.from_json(json_model)
 
-        # animation initialization
-        self.current_swing_leg = 0
-
-        self.leg_l_target = Vector2(self.pos)
-        self.leg_r_target = Vector2(self.pos)
-        self.leg_targets = [self.leg_l_target, self.leg_r_target]
-
         # keyframe setup
         self.current_keyframe = 0
-        self.keyframe_step = -self.direction * ANIMATIONS["leg_target"] / 2 * KEYFRAME_STEP
-
-        self.leg_is_grounded = [False, False]
+        self.current_animation = "walking"
 
         self.animations: Dict[str, Animation] = dict()
         self.load_animations()
 
 
-    def set_pos(self, pos: tuple):
-        super().set_pos(pos)
-
-        self.leg_l_target.update(pos)
-        self.leg_r_target.update(pos)
-
-
     def load_animations(self):
-        # TODO: load animations
+        """Loads all the animations of the player from the
+        corresponding json files
+        """
 
         animation_paths = ANIMATIONS["animation_paths"]["player"]
 
@@ -72,34 +56,6 @@ class Player(Entity):
                 animation_name,
                 animation.num_keyframes
             )
-
-
-
-    def calculate_target_pos(self, colliders: List[Collider], target_leg_pos: Vector2) -> Vector2:
-        """Calculates the target postion of the leg
-
-        Args:
-            colliders (list): the list of colliders in the map
-            pos: (Vector2): the player's position
-            direction: (int): the direction the player is facing
-
-        Returns:
-            Vector2: the target position of the leg end effector
-        """
-        self.leg_is_grounded[self.current_swing_leg] = False
-
-        for collider in colliders:
-
-            if self.pos.y - ANIMATIONS["leg_target_height"] > collider.bounding_box.top:
-                logging.debug("WALL: %s", collider)
-                continue
-
-            if collider.bounding_box.collidepoint(target_leg_pos):
-                logging.debug("STEP: %s", collider)
-                self.leg_is_grounded[self.current_swing_leg] = True
-                return Vector2(target_leg_pos.x, collider.bounding_box.top)
-
-        return target_leg_pos
 
 
 
@@ -125,7 +81,7 @@ class Player(Entity):
             if bone is None:
                 bone = self.model.get_bone(bone_name)
 
-            bone.follow(self.pos + target[0], target[1] * self.direction)
+            bone.follow(self.model.origin + (target[0].x * self.direction, target[0].y), target[1] * self.direction)
             logging.debug("ANIMATION_UPDATE: current_keyframe: %s | bone: %s | target_pos: %s | direction: %s", self.current_keyframe, bone_name, self.pos + target[0], target[1])
 
 
@@ -155,31 +111,13 @@ class Player(Entity):
         """Makes the necessary computations to update the physics of the player
         """
         self.is_climbing = False
-        self.leg_is_grounded[self.current_swing_leg] = False
 
         vector = self.model.origin - self.model.get_bone("tronco").a
-
-        #? LEG ANIMATION
-        self.animate("walking", colliders)
-
-        #? hitbox y lifting based on y of leg
-        if self.is_moving and self.leg_is_grounded[(self.current_swing_leg + 1) % 2] and self.leg_targets[(self.current_swing_leg + 1) % 2].y < self.pos.y:
-
-            logging.debug("(IS_CLIMBING) NEW_Y: %s", self.bounding_box.bottom)
-            self.is_climbing = True
-            self.vel.y -= ANIMATIONS["leg_climbing_acc"]
-
 
         # calculate position based on velocity
         super().update()
 
-        #? COLLISIONS
-        self.check_collisions(colliders)
-
-
-
         #? updates the player model bones
-
         # move the origin of the model to the position of
         # the bounding_box and update the anchor bone as well
         self.model.set_origin(self.pos)
@@ -187,6 +125,13 @@ class Player(Entity):
 
         # update the skeleton object
         self.model.update()
+
+        #? COLLISIONS
+        self.check_collisions(colliders)
+
+        #? LEG ANIMATION
+        self.animate(self.current_animation, colliders)
+
 
 
     def blit(self, canvas: Surface):

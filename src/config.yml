@@ -1,6 +1,6 @@
 window:
   size: [800,600]
-  fps: 10
+  fps: 30
 
 physics:
   gravity: 2
@@ -20,3 +20,6 @@ animations:
   animation_paths:
     player:
       walking: "animations/player/walking.json"
+
+models:
+  player: "models/player.json"

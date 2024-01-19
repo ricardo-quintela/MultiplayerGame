@@ -27,3 +27,4 @@ else:
     PHYSICS = config["physics"]
     ENTITIES = config["entities"]
     ANIMATIONS = config["animations"]
+    MODELS = config["models"]
