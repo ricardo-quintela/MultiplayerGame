@@ -7,6 +7,9 @@ from config import PHYSICS, ENTITIES
 
 
 class Entity:
+    """An entity handles basic physics calculations
+    and movement. It's hitbox can also be drawn on the screen
+    """
 
     def __init__(self, hitbox_size: tuple, has_gravity: bool = True, max_vel_x: int = ENTITIES["max_vel_x"], max_vel_y: int = ENTITIES["max_vel_y"]) -> None:
         """Constructor of the class Entity

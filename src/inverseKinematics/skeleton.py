@@ -1,4 +1,5 @@
 from typing import List, Dict, Sequence, Union
+import logging
 
 from pygame import Surface, Vector2
 
@@ -21,6 +22,8 @@ class Skeleton:
         self._limbs_names: Dict[str ,int] = dict()
 
         self.origin = Vector2(0,0)
+
+        self.skeleton_anchor: Bone = None
 
 
     def set_origin(self, pos: Sequence[int]):
@@ -208,13 +211,13 @@ class Skeleton:
                 anchor = segment["links"][1].split(".")
 
                 # get the anchor bone
-                bone = skeleton.get_bone(anchor[0])
+                anchor_bone = skeleton.get_bone(anchor[0])
 
                 # get the point the bone is anchored to
                 if anchor[1] == "a":
-                    point = bone.a
+                    point = anchor_bone.a
                 else:
-                    point = bone.b
+                    point = anchor_bone.b
 
                 # try to anchor a limb, if the limb doesnt exist, then anchor a bone
                 bone = skeleton.get_limb(segment["name"])
@@ -224,6 +227,7 @@ class Skeleton:
 
                 bone = skeleton.get_bone(segment["name"])
                 bone.fixate(point, anchor[2])
+                skeleton.skeleton_anchor = anchor_bone
 
 
         return skeleton

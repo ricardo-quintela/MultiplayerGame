@@ -1,6 +1,6 @@
 window:
   size: [800,600]
-  fps: 5
+  fps: 30
 
 physics:
   gravity: 2
@@ -8,17 +8,19 @@ physics:
 
 
 entities:
-  max_vel_x: 10
+  max_vel_x: 15
   max_vel_y: 10
+  acc_x: 5
   jump_height: 20
 
 animations:
   leg_climbing_acc: 1
   leg_target: 50
   let_target_height: 50
-  keyframes: 10
+  animation_speed: 0.3
   animation_paths:
     player:
+      idling: "animations/player/idling.json"
       walking: "animations/player/walking.json"
 
 models:

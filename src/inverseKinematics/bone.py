@@ -5,10 +5,7 @@ from pygame import Vector2
 from pygame import Surface
 from pygame.draw import line
 
-from .exceptions import PointNotFoundException, InvalidPointException, InvalidLinkException
-from .types import Segment
-
-point_O = Vector2(0,0)
+from .exceptions import PointNotFoundException
 
 class Bone:
     def __init__(self, x: int, y: int, length: float, angle: float, name: str = "") -> None:

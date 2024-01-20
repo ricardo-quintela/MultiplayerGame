@@ -165,10 +165,7 @@ class Limb:
         """Updates all the bones in the skeleton
         """
 
-        for bone in self.bones:
-            bone.update()
-
-        if self.anchor and self.bones:
+        if self.anchor is not None and self.bones:
             self.attachment.update(self.anchor)
 
 
