@@ -20,11 +20,14 @@ animations:
   animation_speed: 0.3
   animation_paths:
     player:
-      idling: "animations/player/idling.json"
-      walking: "animations/player/walking.json"
+      idling: "assets/animations/player/idling.json"
+      walking: "assets/animations/player/walking.json"
 
 models:
-  player: "models/player.json"
+  player: "assets/models/player.json"
 
 maps:
-  room_rules: "maps/room_rules.json"
+  room_rules: "assets/maps/room_rules.json"
+
+debugging:
+  map_seed: 18

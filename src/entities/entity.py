@@ -8,19 +8,19 @@ from config import PHYSICS, ENTITIES
 
 class Entity:
     """An entity handles basic physics calculations
-    and movement. It's hitbox can also be drawn on the screen
+    and movement. It's bounding_box can also be drawn on the screen
     """
 
-    def __init__(self, hitbox_size: tuple, has_gravity: bool = True, max_vel_x: int = ENTITIES["max_vel_x"], max_vel_y: int = ENTITIES["max_vel_y"]) -> None:
+    def __init__(self, bounding_box_size: tuple, has_gravity: bool = True, max_vel_x: int = ENTITIES["max_vel_x"], max_vel_y: int = ENTITIES["max_vel_y"]) -> None:
         """Constructor of the class Entity
 
         Args:
-            hitbox_size (tuple): the size of the bounding_box
+            bounding_box_size (tuple): the size of the bounding_box
             hasGravity (bool): whether to enable gravity to the object or not. Defaults to True.
         """
         self.pos = Vector2(0,0)
 
-        self.bounding_box = Rect((0,0), hitbox_size)
+        self.bounding_box = Rect((0,0), bounding_box_size)
 
         # velocity
         self.vel = Vector2(0,0)
@@ -156,7 +156,7 @@ class Entity:
                 self.pos.update(self.bounding_box.midbottom)
 
 
-    def show_hitbox(self, canvas: Surface):
+    def show_bounding_box(self, canvas: Surface):
         """Draws a rectangle on the given canvas representing the bounding_box of the entity
 
         Args:

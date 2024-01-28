@@ -22,10 +22,10 @@ class SkeletonAnimated(Entity):
     and the path to the json file
     """
 
-    def __init__(self, hitbox_size, model_path: str, animation_paths: Dict[str, str]) -> None:
+    def __init__(self, bounding_box_size, model_path: str, animation_paths: Dict[str, str]) -> None:
         """Constructor of the class SkeletonAnimated
         """
-        super().__init__(hitbox_size, has_gravity=True)
+        super().__init__(bounding_box_size, has_gravity=True)
 
         # model initialization
         with open(model_path, "r", encoding="utf-8") as model_file:

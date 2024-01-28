@@ -11,10 +11,10 @@ from .skeleton_animated import SkeletonAnimated
 ANIMATION_FRAME_SKIP = 1 / ANIMATIONS["animation_speed"]
 
 class Player(SkeletonAnimated):
-    def __init__(self, hitbox_size) -> None:
+    def __init__(self, bounding_box_size) -> None:
         """Constructor of the class Player
         """
-        super().__init__(hitbox_size, MODELS["player"], ANIMATIONS["animation_paths"]["player"])
+        super().__init__(bounding_box_size, MODELS["player"], ANIMATIONS["animation_paths"]["player"])
 
         self.current_animation = "idling"
 

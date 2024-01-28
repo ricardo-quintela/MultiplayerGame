@@ -28,4 +28,5 @@ else:
     ENTITIES = config["entities"]
     ANIMATIONS = config["animations"]
     MODELS = config["models"]
-    ROOM_RULES = config["room_rules"]
+    MAPS = config["maps"]
+    DEBUG = config["debugging"]

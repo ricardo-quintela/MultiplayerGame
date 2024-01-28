@@ -25,6 +25,8 @@ class Game:
 
         self.colliders = list()
 
+        logging.info("Loading game assets")
+
         # map
         self.colliders.append(Collider((0,400), (800, 200), 1))
         self.colliders.append(Collider((0,100), (50, 300), 1))
@@ -51,12 +53,12 @@ class Game:
 
         #! PLAYER
         self.player.blit(self.root.canvas)
-        self.player.show_hitbox(self.root.canvas)
+        self.player.show_bounding_box(self.root.canvas)
 
 
         #! COLLIDERS
         for collider in self.colliders:
-            collider.show_hitbox(self.root.canvas)
+            collider.show_bounding_box(self.root.canvas)
 
         #* DEBUGGING
         circle(self.root.canvas, "green", self.player.model.origin, 4)
