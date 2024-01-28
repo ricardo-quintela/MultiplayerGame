@@ -3,6 +3,8 @@ from typing import List, Tuple, Union, Dict, TypedDict, Deque
 from random import Random
 from collections import deque
 
+from datetime import datetime
+
 RoomName = str
 
 RoomsList = List[RoomName]
@@ -16,7 +18,7 @@ class RoomRules(TypedDict):
 
 
 class JSONRooms(TypedDict):
-    mainRoom: str
+    startRoom: str
     rules: Dict[RoomName, RoomRules]
 
 
@@ -33,15 +35,7 @@ class WaveFuncionCollapse:
     def generate_map(
         self, seed: Union[int, float, str, bytes, bytearray] = None, size: int = 1
     ) -> List[List[RoomName]]:
-        """Generates a map using a variation of the WFC algorithm
 
-        Args:
-            seed (Union[int, float, str, bytes, bytearray], Optional): the rng seed.
-            Defaults to None
-
-        Returns:
-            List[List[RoomName]]: the map
-        """
         logging.info("Generating %sx%s map, random_seed=%s", size, size, seed)
 
         collapse_table: List[List[List[RoomName]]] = [
@@ -83,7 +77,6 @@ class WaveFuncionCollapse:
 
         logging.info("Successfully generated a map with %s rooms", room_count)
 
-
         return generated_map
 
 
@@ -113,6 +106,9 @@ class WaveFuncionCollapse:
         current_entropy = entropy_queue.popleft()
         current_entropy[0] = 999
         entropy_queue.append(current_entropy)
+
+        if room is None:
+            return True
 
 
         self.update_nighbors_rules(x-1,y, self.rules[room]["left"], size, collapse_table, entropy_queue)
@@ -160,9 +156,24 @@ class WaveFuncionCollapse:
 
         # sort the entropy with insertion sort
         queue_index = 0
-        while entropy_queue[queue_index][0] <= current_entropy[0]:
+        while entropy_queue[queue_index][0] < current_entropy[0]:
             queue_index += 1
         entropy_queue.insert(queue_index, current_entropy)
+
+
+
+    @classmethod
+    def from_json(cls, json_rooms: JSONRooms):
+        """Creates an instance of a WaveFunctionCollapse generator
+        from a json formated object containing the room rules
+
+        Args:
+            json_rooms (JSONRooms): the json rules of each room
+
+        Returns:
+            WaveFunctionCollapse: the wfc generator
+        """
+        return cls(json_rooms["rules"], json_rooms["startRoom"])
 
 
 
@@ -170,33 +181,20 @@ class WaveFuncionCollapse:
         return f"WaveFunctionCollapse(num_rooms={self.num_rooms})"
 
 
+
+
 # debugging
 if __name__ == "__main__":
-    rooms: Dict[str, RoomRules] = {
-        "main": {
-            "up": ["lootRoom"],
-            "down": ["lootRoom"],
-            "left": ["quoridor", "lootRoom"],
-            "right": ["quoridor", "lootRoom"],
-        },
-        "lootRoom": {
-            "up": ["lootRoom"],
-            "down": ["lootRoom"],
-            "left": ["quoridor", "lootRoom"],
-            "right": ["quoridor", "lootRoom"],
-        },
-        "quoridor": {
-            "up": [],
-            "down": [],
-            "left": ["quoridor", "lootRoom"],
-            "right": ["quoridor", "lootRoom"],
-        },
-    }
 
-    wfc_generator = WaveFuncionCollapse(rooms, "main")
+    from json import loads
+
+    with open("tests/test_rules.json", "r", encoding="utf-8") as file:
+        rooms: Dict[str, RoomRules] = loads(file.read())
+
+    wfc_generator = WaveFuncionCollapse.from_json(rooms)
     print(wfc_generator)
 
-    gen_map = wfc_generator.generate_map(seed=2, size=10)
+    gen_map = wfc_generator.generate_map(seed=18, size=10)
 
     for line in gen_map:
         for column in line:

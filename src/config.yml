@@ -25,3 +25,6 @@ animations:
 
 models:
   player: "models/player.json"
+
+maps:
+  room_rules: "maps/room_rules.json"

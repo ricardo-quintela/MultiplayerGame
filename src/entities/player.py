@@ -2,7 +2,7 @@ from pygame import Surface
 from pygame.draw import circle
 
 from utils import MovementKeys
-from config import ENTITIES, ANIMATIONS, MODELS, ENTITIES
+from config import ENTITIES, ANIMATIONS, MODELS
 
 from .skeleton_animated import SkeletonAnimated
 

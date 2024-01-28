@@ -1,0 +1,23 @@
+{
+    "startRoom": "main",
+    "rules": {
+        "main": {
+            "up": ["lootRoom", null],
+            "down": ["lootRoom", null],
+            "left": ["quoridor", "lootRoom"],
+            "right": ["quoridor", "lootRoom"]
+        },
+        "lootRoom": {
+            "up": ["lootRoom", null],
+            "down": ["lootRoom", null],
+            "left": ["quoridor", "lootRoom", null],
+            "right": ["quoridor", "lootRoom", null]
+        },
+        "quoridor": {
+            "up": [],
+            "down": [],
+            "left": ["quoridor", "lootRoom"],
+            "right": ["quoridor", "lootRoom"]
+        }
+    }
+}
