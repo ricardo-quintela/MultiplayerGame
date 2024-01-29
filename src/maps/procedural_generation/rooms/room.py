@@ -32,6 +32,9 @@ class Room:
 
     @classmethod
     def from_json(cls, name: str, json_room: JSONRoom):
+        logging.info("Loading map from '%s'", name)
+
+
         room = cls(name)
 
         json_colliders = None
@@ -53,5 +56,6 @@ class Room:
                 )
             )
 
+        logging.info("Map loaded successfully")
 
         return room

@@ -1,5 +1,9 @@
+logging:
+  level: INFO
+
 window:
-  size: [800,600]
+  size: [960,544]
+  maximized: true
   fps: 30
 
 physics:
@@ -27,6 +31,7 @@ models:
   player: "assets/models/player.json"
 
 maps:
+  default_size: [960,544]
   room_rules: "assets/maps/room_rules.json"
   rooms_folder: "assets/maps/rooms/"
 

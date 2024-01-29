@@ -23,6 +23,7 @@ if __name__ == "__main__":
 else:
     config = load_config("config.yml")
 
+    LOGGING = config["logging"]
     WINDOW = config["window"]
     PHYSICS = config["physics"]
     ENTITIES = config["entities"]

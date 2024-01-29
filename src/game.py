@@ -1,8 +1,11 @@
 import logging
-from guiElements.window import Window
+from guiElements.inputs import Label
 from pygame.draw import circle
+from pygame import Surface
 from json import loads
+from pygame.transform import scale
 
+from window import Window
 from events import GameEvents
 from utils import MovementKeys
 
@@ -26,23 +29,20 @@ class Game:
         self.root = root
         self.events = events
 
+        self.canvas = Surface(MAPS["default_size"])
+
+        self.fps_counter = Label(f"FPS: {self.root.get_fps():.0f}", (0,0,0), 20)
+
         logging.info("Loading game assets")
 
-        # # map
-        # self.colliders.append(Collider((0,400), (800, 200), 1))
-        # self.colliders.append(Collider((0,100), (50, 300), 1))
-        # self.colliders.append(Collider((750,100), (50, 300), 1))
-        # self.colliders.append(Collider((500,370), (60, 30), 1))
-        # self.colliders.append(Collider((530,340), (60, 30), 1))
-        # self.colliders.append(Collider((560,310), (60, 30), 1))
-        # self.colliders.append(Collider((590,280), (60, 30), 1))
 
+        # map
         room_name = MAPS["rooms_folder"] + "test_room.json"
         with open(room_name, "r", encoding="utf-8") as room_file:
             self.room = Room.from_json(room_name, loads(room_file.read()))
 
 
-        self.player = Player((30,250)) # default 60,250
+        self.player = Player((30,250))
         self.player.set_pos((400,400))
 
 
@@ -54,19 +54,27 @@ class Game:
 
         #! BACKGROUND
         # fill the canvas with white
-        self.root.fill("white")
+        self.canvas.fill("white")
 
         #! PLAYER
-        self.player.blit(self.root.canvas)
-        self.player.show_bounding_box(self.root.canvas)
+        self.player.blit(self.canvas)
+        self.player.show_bounding_box(self.canvas)
 
 
         #! COLLIDERS
-        self.room.show_bounding_boxes(self.root.canvas)
+        self.room.show_bounding_boxes(self.canvas)
 
         #* DEBUGGING
-        circle(self.root.canvas, "green", self.player.model.origin, 4)
-        circle(self.root.canvas, "green", self.player.model.get_bone("tronco").a, 4)
+        circle(self.canvas, "green", self.player.model.origin, 4)
+        circle(self.canvas, "green", self.player.model.get_bone("tronco").a, 4)
+
+
+        # transforming the canvas to match the screen size
+        self.root.blit(scale(self.canvas, self.root.canvas.get_size()), (0,0))
+
+
+        # show an FPS counter
+        self.fps_counter.blit(self.root.canvas, (0,0))
 
         self.root.update()
 
@@ -91,5 +99,8 @@ class Game:
             #! PLAYER
             self.player.move(movement_keys)
             self.player.update(self.room.colliders)
+
+
+            self.fps_counter.setText(f"FPS: {self.root.get_fps():.0f}", (0,0,0))
 
             self.update_display()

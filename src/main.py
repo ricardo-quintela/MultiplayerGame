@@ -2,25 +2,25 @@
 import pygame
 import logging
 
-from guiElements.window import Window
+from window import Window
 from events import GameEvents
 
 from game import Game
 
-from config import WINDOW
+from config import LOGGING, WINDOW
 
 
 logging.basicConfig(
     format='[%(asctime)s] %(thread)s %(levelname)s :  %(message)s'
 )
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(LOGGING["level"])
 
 
 def main():
     pygame.init()
 
     logging.debug("Building window")
-    root = Window(WINDOW["size"], WINDOW["fps"])
+    root = Window(WINDOW["size"], WINDOW["fps"], maximize=WINDOW["maximized"])
 
     logging.debug("Loading window events")
     events = GameEvents()
