@@ -3,7 +3,7 @@ logging:
 
 window:
   size: [960,544]
-  maximized: true
+  maximized: false
   fps: 30
 
 physics:
