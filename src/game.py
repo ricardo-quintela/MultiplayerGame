@@ -1,12 +1,15 @@
 import logging
 from guiElements.window import Window
 from pygame.draw import circle
+from json import loads
 
 from events import GameEvents
 from utils import MovementKeys
 
 from entities import Player
-from blocks import Collider
+
+from config import MAPS
+from maps import Room
 
 
 class Game:
@@ -23,18 +26,20 @@ class Game:
         self.root = root
         self.events = events
 
-        self.colliders = list()
-
         logging.info("Loading game assets")
 
-        # map
-        self.colliders.append(Collider((0,400), (800, 200), 1))
-        self.colliders.append(Collider((0,100), (50, 300), 1))
-        self.colliders.append(Collider((750,100), (50, 300), 1))
-        self.colliders.append(Collider((500,370), (60, 30), 1))
-        self.colliders.append(Collider((530,340), (60, 30), 1))
-        self.colliders.append(Collider((560,310), (60, 30), 1))
-        self.colliders.append(Collider((590,280), (60, 30), 1))
+        # # map
+        # self.colliders.append(Collider((0,400), (800, 200), 1))
+        # self.colliders.append(Collider((0,100), (50, 300), 1))
+        # self.colliders.append(Collider((750,100), (50, 300), 1))
+        # self.colliders.append(Collider((500,370), (60, 30), 1))
+        # self.colliders.append(Collider((530,340), (60, 30), 1))
+        # self.colliders.append(Collider((560,310), (60, 30), 1))
+        # self.colliders.append(Collider((590,280), (60, 30), 1))
+
+        room_name = MAPS["rooms_folder"] + "test_room.json"
+        with open(room_name, "r", encoding="utf-8") as room_file:
+            self.room = Room.from_json(room_name, loads(room_file.read()))
 
 
         self.player = Player((30,250)) # default 60,250
@@ -57,8 +62,7 @@ class Game:
 
 
         #! COLLIDERS
-        for collider in self.colliders:
-            collider.show_bounding_box(self.root.canvas)
+        self.room.show_bounding_boxes(self.root.canvas)
 
         #* DEBUGGING
         circle(self.root.canvas, "green", self.player.model.origin, 4)
@@ -86,6 +90,6 @@ class Game:
 
             #! PLAYER
             self.player.move(movement_keys)
-            self.player.update(self.colliders)
+            self.player.update(self.room.colliders)
 
             self.update_display()

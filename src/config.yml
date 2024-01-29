@@ -28,6 +28,7 @@ models:
 
 maps:
   room_rules: "assets/maps/room_rules.json"
+  rooms_folder: "assets/maps/rooms/"
 
 debugging:
   map_seed: 18
