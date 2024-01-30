@@ -1,0 +1,98 @@
+{ "columns":8,
+ "image":"..\/..\/sprites\/blueprint_spritesheet.png",
+ "imageheight":128,
+ "imagewidth":128,
+ "margin":0,
+ "name":"blueprint",
+ "spacing":0,
+ "tilecount":64,
+ "tiledversion":"git",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":"1.10",
+ "wangsets":[
+        {
+         "colors":[
+                {
+                 "color":"#ff0000",
+                 "name":"block",
+                 "probability":1,
+                 "tile":-1
+                }, 
+                {
+                 "color":"#00ff00",
+                 "name":"air",
+                 "probability":1,
+                 "tile":-1
+                }],
+         "name":"blocks",
+         "tile":-1,
+         "type":"edge",
+         "wangtiles":[
+                {
+                 "tileid":0,
+                 "wangid":[2, 0, 1, 0, 1, 0, 2, 0]
+                }, 
+                {
+                 "tileid":1,
+                 "wangid":[2, 0, 1, 0, 1, 0, 1, 0]
+                }, 
+                {
+                 "tileid":2,
+                 "wangid":[2, 0, 2, 0, 1, 0, 1, 0]
+                }, 
+                {
+                 "tileid":4,
+                 "wangid":[2, 0, 2, 0, 1, 0, 2, 0]
+                }, 
+                {
+                 "tileid":8,
+                 "wangid":[1, 0, 1, 0, 1, 0, 2, 0]
+                }, 
+                {
+                 "tileid":9,
+                 "wangid":[1, 0, 1, 0, 1, 0, 1, 0]
+                }, 
+                {
+                 "tileid":10,
+                 "wangid":[1, 0, 2, 0, 1, 0, 1, 0]
+                }, 
+                {
+                 "tileid":12,
+                 "wangid":[1, 0, 2, 0, 1, 0, 2, 0]
+                }, 
+                {
+                 "tileid":16,
+                 "wangid":[1, 0, 1, 0, 2, 0, 2, 0]
+                }, 
+                {
+                 "tileid":17,
+                 "wangid":[1, 0, 1, 0, 2, 0, 1, 0]
+                }, 
+                {
+                 "tileid":18,
+                 "wangid":[1, 0, 2, 0, 2, 0, 1, 0]
+                }, 
+                {
+                 "tileid":20,
+                 "wangid":[1, 0, 2, 0, 2, 0, 2, 0]
+                }, 
+                {
+                 "tileid":22,
+                 "wangid":[2, 0, 2, 0, 2, 0, 2, 0]
+                }, 
+                {
+                 "tileid":32,
+                 "wangid":[2, 0, 1, 0, 2, 0, 2, 0]
+                }, 
+                {
+                 "tileid":33,
+                 "wangid":[2, 0, 1, 0, 2, 0, 1, 0]
+                }, 
+                {
+                 "tileid":34,
+                 "wangid":[2, 0, 2, 0, 2, 0, 1, 0]
+                }]
+        }]
+}

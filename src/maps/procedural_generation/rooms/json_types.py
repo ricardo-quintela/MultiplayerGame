@@ -100,6 +100,31 @@ class JSONLayer(TypedDict):
     y: int
 
 
+class JSONWangTiles(TypedDict):
+    tileid: int
+    wangid: List[int]
+
+
+
+class JSONWangColor(TypedDict):
+    color: str
+    name: str
+    probability: float
+    properties: List[JSONProperty]
+    tile: int
+
+
+
+class JSONWangSet(TypedDict):
+    colors: List[JSONWangColor]
+    name: str
+    properties: List[JSONProperty]
+    tile: int
+    type: Literal["corner", "edge", "mixed"]
+    wangtiles: List[JSONWangTiles]
+
+
+
 class JSONTile(TypedDict):
     animation: List[JSONFrame]
     id: int
@@ -144,6 +169,7 @@ class JSONTileset(TypedDict):
     transparentcolor: Optional[str]
     type: Literal["tileset"]
     version: str
+    wangsets: List[JSONWangSet]
 
 
 
