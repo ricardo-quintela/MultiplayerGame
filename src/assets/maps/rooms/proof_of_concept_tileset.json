@@ -1,0 +1,14 @@
+{ "columns":16,
+ "image":"..\/..\/sprites\/proof_of_concept.png",
+ "imageheight":512,
+ "imagewidth":512,
+ "margin":0,
+ "name":"proof_of_concept",
+ "spacing":0,
+ "tilecount":256,
+ "tiledversion":"git",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":"1.10"
+}
