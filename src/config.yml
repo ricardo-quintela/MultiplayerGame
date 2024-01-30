@@ -29,6 +29,7 @@ animations:
 
 models:
   player: "assets/models/player.json"
+  scale: 0.50
 
 maps:
   default_size: [960,544]

@@ -1,5 +1,4 @@
 from typing import List, Dict, Sequence, Union
-import logging
 
 from pygame import Surface, Vector2
 
@@ -150,11 +149,12 @@ class Skeleton:
 
 
     @classmethod
-    def from_json(cls, json_model: JSONSkeleton):
+    def from_json(cls, json_model: JSONSkeleton, scale: float = 1.0):
         """Loads the skeleton model from the given json
 
         Args:
             json_model (JSONSkeleton): the json skeleton
+            scale (float, Optional): the scale of the model
 
         Returns:
             Skeleton: the Skeleton instance
@@ -172,9 +172,9 @@ class Skeleton:
         for bone in json_model["segments"]:
             skeleton.add(
                 Bone(
-                    bone["a"][0] + origin[0],
-                    bone["a"][1] + origin[1],
-                    bone["length"],
+                    bone["a"][0] * scale + origin[0],
+                    bone["a"][1] * scale + origin[1],
+                    bone["length"] * scale,
                     bone["angle"],
                     bone["name"]
                 )

@@ -22,16 +22,21 @@ class SkeletonAnimated(Entity):
     and the path to the json file
     """
 
-    def __init__(self, bounding_box_size, model_path: str, animation_paths: Dict[str, str]) -> None:
+    def __init__(self, bounding_box_size: tuple, model_path: str, animation_paths: Dict[str, str], scale: float = 1.0) -> None:
         """Constructor of the class SkeletonAnimated
         """
-        super().__init__(bounding_box_size, has_gravity=True)
+        super().__init__(
+            (bounding_box_size[0] * scale, bounding_box_size[1] * scale),
+            has_gravity=True
+        )
+
+        logging.info("Loading model '%s'", model_path)
 
         # model initialization
         with open(model_path, "r", encoding="utf-8") as model_file:
             json_model = loads(model_file.read())
 
-        self.model = Skeleton.from_json(json_model)
+        self.model = Skeleton.from_json(json_model, scale)
 
         # keyframe setup
         #* the keyframe updater makes the animation slower compared to the
@@ -41,10 +46,10 @@ class SkeletonAnimated(Entity):
         self.current_animation: str = None
 
         self.animations: Dict[str, Animation] = dict()
-        self.load_animations(animation_paths)
+        self.load_animations(animation_paths, scale)
 
 
-    def load_animations(self, animation_paths: Dict[str, str]):
+    def load_animations(self, animation_paths: Dict[str, str], scale: float = 1.0):
         """Loads all the animations of the model from the
         corresponding json files
         """
@@ -60,7 +65,7 @@ class SkeletonAnimated(Entity):
             with open(animation_path, "r", encoding="utf-8") as animation_file:
                 animation_json: JSONAnimation = loads(animation_file.read())
 
-            animation = Animation.from_json(animation_json)
+            animation = Animation.from_json(animation_json, scale)
 
             self.animations[animation_name] = animation
 

@@ -20,11 +20,12 @@ class Animation:
 
 
     @classmethod
-    def from_json(cls, json_animation: JSONAnimation):
+    def from_json(cls, json_animation: JSONAnimation, scale: float = 1.0):
         """Creates an instance of an Animation from json
 
         Args:
             json_animation (JSONAnimation): the json encoded animation keyframes
+            scale (float, Optional): the scale
 
         Returns:
             Animation: the instanced animation
@@ -37,7 +38,7 @@ class Animation:
         for json_keyframe in json_animation['keyframes']:
 
             keyframe = {
-                bone_name: (Vector2(target_point), direction)
+                bone_name: (Vector2(target_point) * scale, direction)
                 for bone_name, (target_point, direction) in json_keyframe.items()
             }
 
