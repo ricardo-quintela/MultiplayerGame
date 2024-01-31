@@ -118,13 +118,14 @@ class Entity:
                 # keys are collider's sides
                 distances = {
                     "top": abs(self.bounding_box.bottom - collider.bounding_box.top),
+                    "bottom": abs(self.bounding_box.top - collider.bounding_box.bottom),
                     "left": abs(self.bounding_box.right - collider.bounding_box.left),
-                    "right": abs(self.bounding_box.left - collider.bounding_box.right),
-                    "bottom": abs(self.bounding_box.top - collider.bounding_box.bottom)
+                    "right": abs(self.bounding_box.left - collider.bounding_box.right)
                 }
 
                 min_dist = min(distances, key=distances.get)
 
+                # TODO: ele esta detetar a colisão na direita no mesmo bloco em que a colisão devia ser no topo
                 logging.debug("DISTS: %s COLLIDED: %s", distances, min_dist)
 
                 # collision handeling
@@ -141,7 +142,6 @@ class Entity:
                             self.vel.x += collider.friction
                         elif self.vel.x > 0:
                             self.vel.x -= collider.friction
-
 
                 elif min_dist == "left":
                     self.bounding_box.right = collider.bounding_box.left

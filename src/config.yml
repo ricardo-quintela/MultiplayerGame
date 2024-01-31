@@ -1,10 +1,10 @@
 logging:
-  level: INFO
+  level: DEBUG
 
 window:
   size: [960,544]
   maximized: false
-  fps: 30
+  fps: 5
 
 physics:
   gravity: 2
@@ -32,7 +32,8 @@ models:
   scale: 0.50
 
 maps:
-  default_size: [960,544]
+  room_size: [960,544]
+  map_size: 5
   room_rules: "assets/maps/room_rules.json"
   rooms_folder: "assets/maps/rooms/"
 
