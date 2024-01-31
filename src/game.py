@@ -29,7 +29,7 @@ class Game:
         self.root = root
         self.events = events
 
-        self.canvas = Surface(MAPS["default_size"])
+        self.canvas = Surface(MAPS["room_size"])
 
         self.fps_counter = Label(f"FPS: {self.root.get_fps():.0f}", (0,0,0), 20)
 
