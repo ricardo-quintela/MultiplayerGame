@@ -4,7 +4,7 @@ logging:
 window:
   size: [960,544]
   maximized: false
-  fps: 5
+  fps: 30
 
 physics:
   gravity: 2
