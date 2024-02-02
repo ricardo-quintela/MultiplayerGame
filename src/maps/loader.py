@@ -1,6 +1,8 @@
+import logging
 from typing import Dict, Tuple
 from json import load
 from time import time_ns
+from datetime import datetime
 from os.path import join
 
 
@@ -21,7 +23,7 @@ class Map:
 
         # the map layout, will handle the navigation conditions
         self.map_rooms = self.wfc_generator.generate_map(
-            seed=DEBUG["map_seed"], size=MAP_SIZE # TODO: set seed as time_ns()
+            seed=DEBUG["map_seed"], size=MAP_SIZE  # TODO: set seed as time_ns()
         )
 
         self.map_size = len(self.map_rooms)
@@ -31,11 +33,10 @@ class Map:
 
         self.load_rooms()
 
-
-
     def load_rooms(self):
-        """Loads the assets for each room that the wfc algorithm has chosen
-        """
+        """Loads the assets for each room that the wfc algorithm has chosen"""
+        logging.info("Loading map")
+        start_time = datetime.now()
 
         # iterating through all the room names in the map
         # in order to load the respective rooms from the json files
@@ -50,10 +51,17 @@ class Map:
                 room_name = self.map_rooms[j][i]
 
                 # load the room from a json file with the corresponding name
-                with open(join(MAPS["rooms_folder"], f"{room_name}.json"), "r", encoding="utf-8") as room_file:
-                    self.rooms[(j,i)] = Room.from_json(room_name, load(room_file))
+                with open(
+                    join(MAPS["rooms_folder"], f"{room_name}.json"),
+                    "r",
+                    encoding="utf-8",
+                ) as room_file:
+                    self.rooms[(j, i)] = Room.from_json(room_name, load(room_file))
 
-
+        logging.info(
+            "Successfully loaded map. Took %s seconds",
+            (datetime.now() - start_time).total_seconds(),
+        )
 
     def get_room(self, room_coords: Tuple[int, int]):
         """Returns a specific room if it exists

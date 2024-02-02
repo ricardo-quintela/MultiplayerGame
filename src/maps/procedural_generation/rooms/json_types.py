@@ -93,8 +93,8 @@ class JSONLayer(TypedDict):
     offsetx: int
     offsety: int
     opacity: float
-    paralaxx: float
-    paralaxy: float
+    parallaxx: float
+    parallaxy: float
     properties: List[JSONProperty]
     tintcolor: str
     type: Literal["tilelayer", "objectgroup"]

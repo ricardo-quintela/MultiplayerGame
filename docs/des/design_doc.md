@@ -23,5 +23,5 @@ Para desenhar as salas, diferentes camadas precisam de ser tidas em conta, já q
 - detalhes2
 - blocos
 - detalhes1
-- paralax
+- parallax
 - background

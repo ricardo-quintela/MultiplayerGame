@@ -5,6 +5,7 @@ from os.path import join
 
 from pygame import Surface
 from pygame.image import load as pgload
+from pygame.draw import rect
 
 from blocks import Collider
 from config import MAPS
@@ -14,13 +15,19 @@ from .json_types import JSONMap, MapFormat, MissingProperty, JSONTileset
 
 LAYER_NAMES = [
     "background",
-    "paralax",
+    "parallax",
     "detail1",
     "block",
     "detail2",
     "collider",
     "poi",
 ]
+
+
+DEFAULT_TEXTURE = Surface((32, 32))
+DEFAULT_TEXTURE.fill((1, 1, 1))
+rect(DEFAULT_TEXTURE, (255, 0, 255), (16, 0, 31, 15))
+rect(DEFAULT_TEXTURE, (255, 0, 255), (0, 16, 15, 31))
 
 
 class Room:
@@ -31,7 +38,7 @@ class Room:
 
         # layers
         self.block_layer: Surface = Surface(MAPS["room_size"])
-        self.block_layer.set_colorkey((0,0,0))
+        self.block_layer.set_colorkey((0, 0, 0))
 
     def show_bounding_boxes(self, canvas: Surface):
         """Draws the bounding_boxes of all the colliders
@@ -44,13 +51,26 @@ class Room:
 
     @classmethod
     def from_json(cls, name: str, json_room: JSONMap):
-        logging.info("Loading map from '%s'", name)
+        """Loads and renders the assets of a room in different Surface layers
+
+        Args:
+            name (str): the room name
+            json_room (JSONMap): the room formated json attributes
+
+        Raises:
+            MapFormat: In case the room file is not in the correct format
+            MissingProperty: If an object doesn't include a required property
+
+        Returns:
+            Room: The rendered room
+        """
+        logging.info("Loading '%s' room", name)
 
         room = cls(name)
 
         # check amount of layers
         if len(json_room["layers"]) != len(LAYER_NAMES):
-            logging.error(
+            logging.fatal(
                 "Map file '%s' is in the wrong format. %s layers",
                 name,
                 len(json_room["layers"]) - len(LAYER_NAMES),
@@ -62,7 +82,7 @@ class Room:
         # check if a layer name is different or out of order
         for i, layer in enumerate(json_room["layers"]):
             if layer["name"] != LAYER_NAMES[i]:
-                logging.error(
+                logging.fatal(
                     "Map file '%s' is in the wrong format. Layer '%s'",
                     name,
                     layer["name"],
@@ -73,13 +93,39 @@ class Room:
 
         # load tilesets
         # load the block tileset
-        with open(join(MAPS["rooms_folder"], json_room["tilesets"][0]["source"]), "r", encoding="utf-8") as tileset_file:
+        with open(
+            join(MAPS["rooms_folder"], json_room["tilesets"][0]["source"]),
+            "r",
+            encoding="utf-8",
+        ) as tileset_file:
             json_block_tileset: JSONTileset = load(tileset_file)
 
-        # load the spritesheet
-        block_spritesheet = pgload(
-            join(MAPS["rooms_folder"], json_block_tileset["image"])
-        ).convert_alpha()
+
+
+        try:
+            # load the spritesheet
+            block_spritesheet = pgload(
+                join(MAPS["rooms_folder"], json_block_tileset["image"])
+            ).convert_alpha()
+        except FileNotFoundError:
+            logging.error(
+                "Couldn't load texture from '%s'",
+                join(MAPS["rooms_folder"], json_block_tileset["image"]),
+            )
+            block_spritesheet = Surface(
+                (json_block_tileset["imagewidth"], json_block_tileset["imageheight"])
+            )
+            for i in range(json_block_tileset["imagewidth"] // json_block_tileset["tileheight"]):
+                for j in range(json_block_tileset["imageheight"] // json_block_tileset["tileheight"]):
+                    block_spritesheet.blit(
+                        DEFAULT_TEXTURE,
+                        (
+                            i * json_block_tileset["tilewidth"],
+                            j * json_block_tileset["tileheight"],
+                        ),
+                    )
+
+
 
         # load block layer
         tile_size = json_block_tileset["tileheight"]
@@ -93,27 +139,36 @@ class Room:
             if tile_index not in loaded_tiles:
                 tile_line = tile_index // json_block_tileset["columns"]
                 tile_col = tile_index / json_block_tileset["columns"] - tile_line
-                tile_coords = (tile_col * json_block_tileset["imagewidth"], tile_line * tile_size)
+                tile_coords = (
+                    tile_col * json_block_tileset["imagewidth"],
+                    tile_line * tile_size,
+                )
 
-                sprite = Surface((json_block_tileset["tilewidth"], json_block_tileset["tileheight"]))
-                sprite.blit(block_spritesheet, (0,0), (tile_coords[0], tile_coords[1], tile_size, tile_size))
+                sprite = Surface(
+                    (json_block_tileset["tilewidth"], json_block_tileset["tileheight"])
+                )
+                sprite.blit(
+                    block_spritesheet,
+                    (0, 0),
+                    (tile_coords[0], tile_coords[1], tile_size, tile_size),
+                )
                 loaded_tiles[tile_index] = sprite
 
             room.block_layer.blit(
                 loaded_tiles[tile_index],
                 (
                     (i % json_room["width"]) * tile_size,
-                    i // json_room["width"] * tile_size
-                )
+                    i // json_room["width"] * tile_size,
+                ),
             )
-        print(loaded_tiles)
+
 
 
         # create colliders and guarantee that they have the friction attribute
         for json_collider in json_room["layers"][5]["objects"]:
 
             if json_collider["properties"][0]["name"] != "friction":
-                logging.error("Property at collider missing: 'friction'")
+                logging.fatal("Property at collider missing: 'friction'")
                 raise MissingProperty("Property at collider missing: 'friction'")
 
             room.colliders.append(
@@ -124,5 +179,5 @@ class Room:
                 )
             )
 
-        logging.info("Map loaded successfully")
+        logging.info("Room loaded successfully")
         return room

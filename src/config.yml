@@ -1,5 +1,5 @@
 logging:
-  level: DEBUG
+  level: INFO
 
 window:
   size: [960,544]
@@ -12,7 +12,7 @@ physics:
 
 
 entities:
-  max_vel_x: 15
+  max_vel_x: 10
   max_vel_y: 10
   acc_x: 5
   jump_height: 20

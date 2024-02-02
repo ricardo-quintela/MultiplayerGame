@@ -15,7 +15,7 @@
         {
          "id":3,
          "image":"",
-         "name":"paralax",
+         "name":"parallax",
          "opacity":1,
          "type":"imagelayer",
          "visible":true,
