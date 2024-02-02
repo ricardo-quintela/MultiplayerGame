@@ -5,9 +5,7 @@ from pygame.sprite import Group
 
 from blocks import Collider
 
-from .json_types import JSONRoom, MapFormatError
-
-
+from .json_types import JSONMap, MapFormatError
 
 
 class Room:
@@ -31,7 +29,7 @@ class Room:
 
 
     @classmethod
-    def from_json(cls, name: str, json_room: JSONRoom):
+    def from_json(cls, name: str, json_room: JSONMap):
         logging.info("Loading map from '%s'", name)
 
 
@@ -39,7 +37,7 @@ class Room:
 
         json_colliders = None
         for layer in json_room["layers"]:
-            if layer["type"] == "objectgroup" and layer["name"] == "colliders":
+            if layer["type"] == "objectgroup" and layer["name"] == "collider":
                 json_colliders = layer["objects"]
                 break
         else:

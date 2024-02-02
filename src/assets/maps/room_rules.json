@@ -1,23 +1,11 @@
 {
-    "startRoom": "main",
+    "startRoom": "proof_of_concept_room",
     "rules": {
-        "main": {
-            "up": ["lootRoom", null],
-            "down": ["lootRoom", null],
-            "left": ["quoridor", "lootRoom"],
-            "right": ["quoridor", "lootRoom"]
-        },
-        "lootRoom": {
-            "up": ["lootRoom", null],
-            "down": ["lootRoom", null],
-            "left": ["quoridor", "lootRoom", null],
-            "right": ["quoridor", "lootRoom", null]
-        },
-        "quoridor": {
+        "proof_of_concept_room": {
             "up": [],
             "down": [],
-            "left": ["quoridor", "lootRoom"],
-            "right": ["quoridor", "lootRoom"]
+            "left": [],
+            "right": []
         }
     }
 }

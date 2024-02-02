@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from pygame import Surface
 from pygame.draw import circle
 
@@ -20,7 +22,12 @@ class Player(SkeletonAnimated):
             MODELS["scale"],
         )
 
+        # animations
         self.current_animation = "idling"
+
+        # map navigation
+        self.current_room: Tuple[int, int] = (0,0)
+
 
     def move(self, movement_keys: MovementKeys):
         """Checks for movement input and gives the player
@@ -49,6 +56,7 @@ class Player(SkeletonAnimated):
                 self.change_animation_state("walking")
                 return
             self.change_animation_state("idling")
+
 
     def blit(self, canvas: Surface):
         super().blit(canvas)

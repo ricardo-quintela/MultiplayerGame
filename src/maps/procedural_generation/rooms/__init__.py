@@ -9,7 +9,7 @@ from .json_types import (
     JSONLayer,
     JSONTile,
     JSONTileset,
-    JSONRoom,
+    JSONMap,
 )
 from .json_types import MapFormatError
 from .room import Room

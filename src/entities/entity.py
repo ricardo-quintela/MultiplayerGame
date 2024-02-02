@@ -3,7 +3,7 @@ from pygame import Rect, Surface, Vector2
 from pygame.draw import rect
 
 
-from config import PHYSICS, ENTITIES
+from config import PHYSICS, ENTITIES, DEBUG
 
 
 class Entity:
@@ -114,7 +114,6 @@ class Entity:
             if self.bounding_box.colliderect(collider.bounding_box):
                 self.is_colliding = True
 
-
                 # keys are collider's sides
                 distances = {
                     "top": abs(self.bounding_box.bottom - self.vel.y - collider.bounding_box.top),
@@ -137,7 +136,7 @@ class Entity:
                     }
                 )
 
-                # collision handeling
+                # collision handling
                 if min_dist == "top":
                     self.bounding_box.bottom = collider.bounding_box.top
                     self.vel.y = 0
@@ -148,9 +147,10 @@ class Entity:
 
                         # friction
                         if self.vel.x < 0:
-                            self.vel.x += collider.friction
+                            self.vel.x = self.vel.x + collider.friction if self.vel.x + collider.friction < 0 else 0
+
                         elif self.vel.x > 0:
-                            self.vel.x -= collider.friction
+                            self.vel.x = self.vel.x - collider.friction if self.vel.x - collider.friction > 0 else 0
 
                 elif min_dist == "left":
                     self.bounding_box.right = collider.bounding_box.left
@@ -174,7 +174,7 @@ class Entity:
 
         rect(
             canvas,
-            "blue",
+            DEBUG["entity_bbox_color"],
             (self.bounding_box.x, self.bounding_box.y, self.bounding_box.width, self.bounding_box.height),
             2
         )

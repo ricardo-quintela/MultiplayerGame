@@ -6,7 +6,7 @@ from pygame import Surface
 
 from config import ANIMATIONS
 from blocks import Collider
-from inverseKinematics import Skeleton
+from inverse_kinematics import Skeleton
 from .animation import Animation, JSONAnimation
 
 from .entity import Entity

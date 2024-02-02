@@ -24,12 +24,12 @@ class JSONRooms(TypedDict):
 
 class WaveFuncionCollapse:
     def __init__(
-        self, rules: Dict[RoomName, RoomRules], start_room: RoomName = ""
+        self, room_rules: Dict[RoomName, RoomRules], start_room: RoomName = ""
     ) -> None:
-        self.rules = rules
+        self.room_rules = room_rules
         self.start_room = start_room
 
-        self.num_rooms = len(rules)
+        self.num_rooms = len(room_rules)
         self.generator = Random()
 
     def generate_map(
@@ -39,7 +39,7 @@ class WaveFuncionCollapse:
         logging.info("Generating %sx%s map, random_seed=%s", size, size, seed)
 
         collapse_table: List[List[List[RoomName]]] = [
-            [list(self.rules.keys()) for _ in range(size)] for _ in range(size)
+            [list(self.room_rules.keys()) for _ in range(size)] for _ in range(size)
         ]
         generated_map: List[List[Union[RoomName, None]]] = [
             [None for _ in range(size)] for _ in range(size)
@@ -111,10 +111,10 @@ class WaveFuncionCollapse:
             return True
 
 
-        self.update_nighbors_rules(x-1,y, self.rules[room]["left"], size, collapse_table, entropy_queue)
-        self.update_nighbors_rules(x+1,y, self.rules[room]["right"], size, collapse_table, entropy_queue)
-        self.update_nighbors_rules(x,y+1, self.rules[room]["down"], size, collapse_table, entropy_queue)
-        self.update_nighbors_rules(x,y-1, self.rules[room]["up"], size, collapse_table, entropy_queue)
+        self.update_nighbors_rules(x-1,y, self.room_rules[room]["left"], size, collapse_table, entropy_queue)
+        self.update_nighbors_rules(x+1,y, self.room_rules[room]["right"], size, collapse_table, entropy_queue)
+        self.update_nighbors_rules(x,y+1, self.room_rules[room]["down"], size, collapse_table, entropy_queue)
+        self.update_nighbors_rules(x,y-1, self.room_rules[room]["up"], size, collapse_table, entropy_queue)
 
         return True
 

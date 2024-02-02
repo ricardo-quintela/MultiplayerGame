@@ -63,7 +63,7 @@
         "rooms/proof_of_concept_tileset.json"
     ],
     "project": "multiplayer_game.tiled-project",
-    "property.type": "int",
+    "property.type": "float",
     "recentFiles": [
         "rooms/proof_of_concept_tileset.json",
         "rooms/proof_of_concept_room.json",

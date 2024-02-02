@@ -7,6 +7,8 @@ from pygame.draw import line
 
 from .exceptions import PointNotFoundException
 
+from config import DEBUG
+
 class Bone:
     def __init__(self, x: int, y: int, length: float, angle: float, name: str = "") -> None:
         """Constructor of the class Bone
@@ -136,4 +138,4 @@ class Bone:
             canvas (Surface): the Surface where to draw the bone
         """
 
-        line(canvas, "red", self.a, self.b, 3)
+        line(canvas, DEBUG["skeleton_bone_color"], self.a, self.b, 3)

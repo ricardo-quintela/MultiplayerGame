@@ -1,6 +1,8 @@
 from pygame import Rect, Surface
 from pygame.draw import rect
 
+from config import DEBUG
+
 
 class Collider:
     def __init__(self, pos: tuple, size: tuple, friction: int = 0) -> None:
@@ -25,7 +27,7 @@ class Collider:
 
         rect(
             canvas,
-            "red",
+            DEBUG["collider_bbox_color"],
             (
                 self.bounding_box.x,
                 self.bounding_box.y,

@@ -174,7 +174,7 @@ class JSONTileset(TypedDict):
 
 
 
-class JSONRoom(TypedDict):
+class JSONMap(TypedDict):
     backgroundcolor: Optional[str]
     compressionlevel: int
     height: int

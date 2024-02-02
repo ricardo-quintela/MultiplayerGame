@@ -2,7 +2,6 @@ import logging
 from guiElements.inputs import Label
 from pygame.draw import circle
 from pygame import Surface
-from json import loads
 from pygame.transform import scale
 
 from window import Window
@@ -12,7 +11,7 @@ from utils import MovementKeys
 from entities import Player
 
 from config import MAPS
-from maps import Room
+from maps import Map
 
 
 class Game:
@@ -35,16 +34,13 @@ class Game:
 
         logging.info("Loading game assets")
 
-
         # map
-        room_name = MAPS["rooms_folder"] + "test_room.json"
-        with open(room_name, "r", encoding="utf-8") as room_file:
-            self.room = Room.from_json(room_name, loads(room_file.read()))
+        self.map = Map()
 
-
+        # player
         self.player = Player((30,250))
         self.player.set_pos((400,400))
-
+        self.player.current_room = (self.map.map_size // 2, self.map.map_size // 2)
 
 
 
@@ -61,8 +57,9 @@ class Game:
         self.player.show_bounding_box(self.canvas)
 
 
-        #! COLLIDERS
-        self.room.show_bounding_boxes(self.canvas)
+        #! SHOWING THE COLLIDERS (DEBUG)
+        room = self.map.get_room(self.player.current_room)
+        room.show_bounding_boxes(self.canvas)
 
         #* DEBUGGING
         circle(self.canvas, "green", self.player.model.origin, 4)
@@ -96,9 +93,12 @@ class Game:
             }
 
 
+            #! MAP
+            current_map_room = self.map.get_room(self.player.current_room)
+
             #! PLAYER
             self.player.move(movement_keys)
-            self.player.update(self.room.colliders)
+            self.player.update(current_map_room.colliders)
 
 
             self.fps_counter.setText(f"FPS: {self.root.get_fps():.0f}", (0,0,0))
