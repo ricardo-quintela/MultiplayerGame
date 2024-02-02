@@ -5,11 +5,11 @@ from .json_types import (
     JSONTransformations,
     JSONTerrain,
     JSONFrame,
-    JSONObject,
+    JSONMapObject,
     JSONLayer,
     JSONTile,
     JSONTileset,
     JSONMap,
 )
-from .json_types import MapFormatError
+from .json_types import MapFormat, MissingProperty
 from .room import Room

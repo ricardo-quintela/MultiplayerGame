@@ -186,10 +186,10 @@ class WaveFuncionCollapse:
 # debugging
 if __name__ == "__main__":
 
-    from json import loads
+    from json import load
 
     with open("tests/test_rules.json", "r", encoding="utf-8") as file:
-        rooms: Dict[str, RoomRules] = loads(file.read())
+        rooms: Dict[str, RoomRules] = load(file)
 
     wfc_generator = WaveFuncionCollapse.from_json(rooms)
     print(wfc_generator)

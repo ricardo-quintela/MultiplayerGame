@@ -30,4 +30,5 @@ else:
     ANIMATIONS = config["animations"]
     MODELS = config["models"]
     MAPS = config["maps"]
+    SPRITES = config["sprites"]
     DEBUG = config["debugging"]

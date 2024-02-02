@@ -1,6 +1,6 @@
 import logging
 from typing import Dict, List
-from json import loads
+from json import load
 
 from pygame import Surface
 
@@ -34,7 +34,7 @@ class SkeletonAnimated(Entity):
 
         # model initialization
         with open(model_path, "r", encoding="utf-8") as model_file:
-            json_model = loads(model_file.read())
+            json_model = load(model_file)
 
         self.model = Skeleton.from_json(json_model, scale)
 
@@ -63,9 +63,9 @@ class SkeletonAnimated(Entity):
             )
 
             with open(animation_path, "r", encoding="utf-8") as animation_file:
-                animation_json: JSONAnimation = loads(animation_file.read())
+                json_animation: JSONAnimation = load(animation_file)
 
-            animation = Animation.from_json(animation_json, scale)
+            animation = Animation.from_json(json_animation, scale)
 
             self.animations[animation_name] = animation
 

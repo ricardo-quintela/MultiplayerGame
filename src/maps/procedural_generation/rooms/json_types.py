@@ -1,8 +1,12 @@
 from typing import List, Optional, TypedDict, Union, Literal
 
 
-class MapFormatError(Exception):
+class MapFormat(Exception):
     """Raised when a map JSON file is not on the correct format
+    """
+
+class MissingProperty(Exception):
+    """Raised when a JSONProperty is missing in an object
     """
 
 
@@ -57,7 +61,7 @@ class JSONFrame(TypedDict):
 
 
 
-class JSONObject(TypedDict):
+class JSONMapObject(TypedDict):
     ellipse: bool
     gid: int
     height: float
@@ -85,7 +89,7 @@ class JSONLayer(TypedDict):
     height: int
     id: int
     name: str
-    objects: Optional[List[JSONObject]]
+    objects: Optional[List[JSONMapObject]]
     offsetx: int
     offsety: int
     opacity: float

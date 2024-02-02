@@ -52,13 +52,18 @@ class Game:
         # fill the canvas with white
         self.canvas.fill("white")
 
+
         #! PLAYER
         self.player.blit(self.canvas)
         self.player.show_bounding_box(self.canvas)
 
 
-        #! SHOWING THE COLLIDERS (DEBUG)
+        #! DRAWING THE ROOM BLOCKS
         room = self.map.get_room(self.player.current_room)
+        self.canvas.blit(room.block_layer, (0,0))
+
+
+        #! SHOWING THE COLLIDERS (DEBUG)
         room.show_bounding_boxes(self.canvas)
 
         #* DEBUGGING

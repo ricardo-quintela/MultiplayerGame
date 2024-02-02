@@ -1,5 +1,5 @@
 from typing import Dict, Tuple
-from json import loads
+from json import load
 from time import time_ns
 from os.path import join
 
@@ -15,9 +15,9 @@ class Map:
 
         # create a wfc generator to later generate the map rooms
         with open(MAPS["room_rules"], "r", encoding="utf-8") as room_rules_file:
-            rooms_json = loads(room_rules_file.read())
+            json_rooms = load(room_rules_file)
 
-        self.wfc_generator = WaveFuncionCollapse.from_json(rooms_json)
+        self.wfc_generator = WaveFuncionCollapse.from_json(json_rooms)
 
         # the map layout, will handle the navigation conditions
         self.map_rooms = self.wfc_generator.generate_map(
@@ -51,7 +51,7 @@ class Map:
 
                 # load the room from a json file with the corresponding name
                 with open(join(MAPS["rooms_folder"], f"{room_name}.json"), "r", encoding="utf-8") as room_file:
-                    self.rooms[(j,i)] = Room.from_json(room_name, loads(room_file.read()))
+                    self.rooms[(j,i)] = Room.from_json(room_name, load(room_file))
 
 
 

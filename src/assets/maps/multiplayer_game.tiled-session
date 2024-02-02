@@ -3,10 +3,10 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "rooms/proof_of_concept_tileset.json",
+    "activeFile": "rooms/proof_of_concept_room.json",
     "expandedProjectPaths": [
-        ".",
-        "rooms"
+        "rooms",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -23,11 +23,11 @@
             "scaleInEditor": 8
         },
         "rooms/proof_of_concept_room.json": {
-            "scale": 1.27,
-            "selectedLayer": 3,
+            "scale": 0.75,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 645.6692913385825,
-                "y": 428.34645669291336
+                "x": 660,
+                "y": 310.6666666666667
             }
         },
         "rooms/proof_of_concept_tileset.json": {

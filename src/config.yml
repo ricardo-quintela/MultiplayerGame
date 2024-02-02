@@ -29,13 +29,16 @@ animations:
 
 models:
   player: "assets/models/player.json"
-  scale: 0.50
+  scale: 0.30
 
 maps:
   room_size: [960,544]
   map_size: 5
   room_rules: "assets/maps/room_rules.json"
   rooms_folder: "assets/maps/rooms/"
+
+sprites:
+  room_sprites_folder: "assets/sprites/rooms/"
 
 debugging:
   map_seed: 18
