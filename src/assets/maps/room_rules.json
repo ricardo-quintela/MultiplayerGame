@@ -3,6 +3,24 @@
     "rules": {
         "proof_of_concept_room": {
             "up": [],
+            "down": ["proof_of_concept_room_down"],
+            "left": ["proof_of_concept_room_left"],
+            "right": ["proof_of_concept_room_right"]
+        },
+        "proof_of_concept_room_left": {
+            "up": [],
+            "down": [],
+            "left": [],
+            "right": []
+        },
+        "proof_of_concept_room_right": {
+            "up": [],
+            "down": [],
+            "left": [],
+            "right": []
+        },
+        "proof_of_concept_room_down": {
+            "up": [],
             "down": [],
             "left": [],
             "right": []

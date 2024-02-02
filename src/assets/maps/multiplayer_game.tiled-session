@@ -5,8 +5,8 @@
     },
     "activeFile": "rooms/proof_of_concept_room.json",
     "expandedProjectPaths": [
-        "rooms",
-        "."
+        ".",
+        "rooms"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -23,11 +23,55 @@
             "scaleInEditor": 8
         },
         "rooms/proof_of_concept_room.json": {
-            "scale": 0.75,
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 0.9525,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 660,
-                "y": 310.6666666666667
+                "x": 487.1391076115485,
+                "y": 292.9133858267717
+            }
+        },
+        "rooms/proof_of_concept_room_down.json": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 0.9915624999999999,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 479.0419161676647,
+                "y": 271.2890009454775
+            }
+        },
+        "rooms/proof_of_concept_room_left.json": {
+            "scale": 0.9915624999999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 480.0504254648598,
+                "y": 272.29751024267256
+            }
+        },
+        "rooms/proof_of_concept_room_left.tmj": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 0.9915624999999999,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 477.0248975732745,
+                "y": 270.2804916482824
+            }
+        },
+        "rooms/proof_of_concept_room_right.json": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 0.9915624999999999,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 478.0334068704696,
+                "y": 270.2804916482824
             }
         },
         "rooms/proof_of_concept_tileset.json": {
@@ -65,8 +109,9 @@
     "project": "multiplayer_game.tiled-project",
     "property.type": "float",
     "recentFiles": [
-        "rooms/proof_of_concept_tileset.json",
         "rooms/proof_of_concept_room.json",
+        "rooms/proof_of_concept_tileset.json",
+        "rooms/proof_of_concept_room_right.json",
         "rooms/blueprint.json",
         "rooms/test_room.json",
         "rooms/blueprint.tsj",

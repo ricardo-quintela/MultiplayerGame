@@ -1,15 +1,15 @@
 import logging
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Union
 from json import load
 from time import time_ns
 from datetime import datetime
 from os.path import join
 
+from pygame import Vector2
+
 
 from config import DEBUG, MAPS
 from .procedural_generation import WaveFuncionCollapse, Room
-
-MAP_SIZE = 1
 
 
 class Map:
@@ -23,7 +23,7 @@ class Map:
 
         # the map layout, will handle the navigation conditions
         self.map_rooms = self.wfc_generator.generate_map(
-            seed=DEBUG["map_seed"], size=MAP_SIZE  # TODO: set seed as time_ns()
+            seed=DEBUG["map_seed"], size=MAPS["map_size"]  # TODO: set seed as time_ns()
         )
 
         self.map_size = len(self.map_rooms)
@@ -63,7 +63,14 @@ class Map:
             (datetime.now() - start_time).total_seconds(),
         )
 
-    def get_room(self, room_coords: Tuple[int, int]):
+        map_string = ""
+        for line in self.map_rooms:
+            map_string += str(line) + "\n"
+        logging.info("MAP:\n%s\n", map_string)
+
+
+
+    def get_room(self, room_coords: Union[Tuple[int, int], Vector2]):
         """Returns a specific room if it exists
 
         Args:
@@ -72,7 +79,7 @@ class Map:
         Returns:
             Room: the room in the corresponding map coords
         """
-        if room_coords not in self.rooms:
+        if (room_coords[1], room_coords[0]) not in self.rooms:
             return
 
-        return self.rooms[room_coords]
+        return self.rooms[(room_coords[1], room_coords[0])]

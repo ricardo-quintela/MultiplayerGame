@@ -52,7 +52,7 @@ class WaveFuncionCollapse:
         # initialize the deque
         for i in range(size):
             for j in range(size):
-                entropy_queue.append([self.num_rooms, (i,j)])
+                entropy_queue.append([999, (i,j)])
 
 
         # initialize rng
@@ -97,6 +97,9 @@ class WaveFuncionCollapse:
         if generated_map[y][x] is not None:
             return False
 
+        if entropy_queue[0][0] == 999:
+            return False
+
         # collapse the room
         room = self.generator.choice(collapse_table[y][x])
         collapse_table[y][x].clear()
@@ -110,7 +113,6 @@ class WaveFuncionCollapse:
         if room is None:
             return True
 
-
         self.update_nighbors_rules(x-1,y, self.room_rules[room]["left"], size, collapse_table, entropy_queue)
         self.update_nighbors_rules(x+1,y, self.room_rules[room]["right"], size, collapse_table, entropy_queue)
         self.update_nighbors_rules(x,y+1, self.room_rules[room]["down"], size, collapse_table, entropy_queue)
@@ -123,7 +125,7 @@ class WaveFuncionCollapse:
         self,
         x: int,
         y: int,
-        room_rules: RoomsList,
+        available_rooms: RoomsList,
         size: int,
         collapse_table: List[List[List[RoomName]]],
         entropy_queue: Deque[List[Union[int, Tuple[int, int]]]]
@@ -132,7 +134,7 @@ class WaveFuncionCollapse:
             return
 
         # update the choices of the cell
-        collapse_table[y][x] = list(set(collapse_table[y][x]) & set(room_rules))
+        collapse_table[y][x] = list(set(collapse_table[y][x]) & set(available_rooms))
         collapse_table[y][x].sort()
 
         # update the entropy and sort
@@ -188,13 +190,13 @@ if __name__ == "__main__":
 
     from json import load
 
-    with open("tests/test_rules.json", "r", encoding="utf-8") as file:
+    with open("assets/maps/room_rules.json", "r", encoding="utf-8") as file:
         rooms: Dict[str, RoomRules] = load(file)
 
     wfc_generator = WaveFuncionCollapse.from_json(rooms)
     print(wfc_generator)
 
-    gen_map = wfc_generator.generate_map(seed=18, size=10)
+    gen_map = wfc_generator.generate_map(seed=18, size=5)
 
     for line in gen_map:
         for column in line:

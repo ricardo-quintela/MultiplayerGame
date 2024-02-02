@@ -15,7 +15,7 @@ entities:
   max_vel_x: 10
   max_vel_y: 10
   acc_x: 5
-  jump_height: 20
+  jump_height: 25
 
 animations:
   leg_climbing_acc: 1

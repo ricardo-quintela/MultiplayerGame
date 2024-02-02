@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from pygame import Surface
+from pygame import Surface, Vector2
 from pygame.draw import circle
 
 from utils import MovementKeys
@@ -26,7 +26,7 @@ class Player(SkeletonAnimated):
         self.current_animation = "idling"
 
         # map navigation
-        self.current_room: Tuple[int, int] = (0,0)
+        self.current_room: Vector2 = Vector2(0,0)
 
 
     def move(self, movement_keys: MovementKeys):

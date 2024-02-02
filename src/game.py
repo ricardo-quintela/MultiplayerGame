@@ -40,7 +40,7 @@ class Game:
         # player
         self.player = Player((30,250))
         self.player.set_pos((400,400))
-        self.player.current_room = (self.map.map_size // 2, self.map.map_size // 2)
+        self.player.current_room.update(self.map.map_size // 2, self.map.map_size // 2)
 
 
 
@@ -104,6 +104,25 @@ class Game:
             #! PLAYER
             self.player.move(movement_keys)
             self.player.update(current_map_room.colliders)
+
+            #! MAP NAVIGATION
+            if self.player.bounding_box.right < 0 and self.map.get_room(self.player.current_room + (-1,0)) is not None:
+                self.player.current_room += (-1,0)
+                self.player.set_pos((MAPS["room_size"][0] - self.player.bounding_box.width, self.player.pos.y))
+
+            elif self.player.bounding_box.left > MAPS["room_size"][0] and self.map.get_room(self.player.current_room + (1,0)) is not None:
+                self.player.current_room += (1,0)
+                self.player.set_pos((self.player.bounding_box.width, self.player.pos.y))
+
+            elif self.player.bounding_box.top > MAPS["room_size"][1] and self.map.get_room(self.player.current_room + (0,1)) is not None:
+                self.player.current_room += (0,1)
+                self.player.set_pos((self.player.pos.x, self.player.bounding_box.height))
+
+            elif self.player.bounding_box.bottom < 0 and self.map.get_room(self.player.current_room + (0,-1)) is not None:
+                self.player.current_room += (0,-1)
+                self.player.set_pos((self.player.pos.x, 0))
+                self.player.vel.y -= 10
+
 
 
             self.fps_counter.setText(f"FPS: {self.root.get_fps():.0f}", (0,0,0))
