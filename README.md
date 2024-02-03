@@ -37,3 +37,6 @@ MultiplayerGame
 
 This game is being coded using python 3.8.  
 The libraries used are in the `requirements.txt` file in the base folder.  
+
+# History
+Started on Jul 13, 2022
