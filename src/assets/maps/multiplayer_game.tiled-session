@@ -29,8 +29,8 @@
             "scale": 0.9525,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 487.1391076115485,
-                "y": 292.9133858267717
+                "x": 486.08923884514434,
+                "y": 291.8635170603674
             }
         },
         "rooms/proof_of_concept_room_down.json": {
@@ -103,15 +103,21 @@
     "map.tileWidth": 32,
     "map.width": 30,
     "openFiles": [
-        "rooms/proof_of_concept_room.json",
-        "rooms/proof_of_concept_tileset.json"
+        "rooms/proof_of_concept_room_left.tmj",
+        "rooms/proof_of_concept_room_right.json",
+        "rooms/proof_of_concept_room_down.json",
+        "rooms/proof_of_concept_room_left.json",
+        "rooms/proof_of_concept_room.json"
     ],
     "project": "multiplayer_game.tiled-project",
     "property.type": "float",
     "recentFiles": [
+        "rooms/proof_of_concept_room_left.tmj",
+        "rooms/proof_of_concept_room_right.json",
+        "rooms/proof_of_concept_room_down.json",
+        "rooms/proof_of_concept_room_left.json",
         "rooms/proof_of_concept_room.json",
         "rooms/proof_of_concept_tileset.json",
-        "rooms/proof_of_concept_room_right.json",
         "rooms/blueprint.json",
         "rooms/test_room.json",
         "rooms/blueprint.tsj",
