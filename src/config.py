@@ -27,6 +27,7 @@ else:
     WINDOW = config["window"]
     PHYSICS = config["physics"]
     ENTITIES = config["entities"]
+    ENEMIES = config["enemies"]
     ANIMATIONS = config["animations"]
     MODELS = config["models"]
     MAPS = config["maps"]

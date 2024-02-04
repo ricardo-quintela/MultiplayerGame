@@ -1,7 +1,9 @@
 import logging
+from typing import Dict, List, Union
 from pygame import Rect, Surface, Vector2
 from pygame.draw import rect
 
+from blocks import Collider
 
 from config import PHYSICS, ENTITIES, DEBUG
 
@@ -32,6 +34,7 @@ class Entity:
         self.is_colliding = False
         self.is_moving = False
         self.is_jumping = False
+        self.is_grounded = False
         self.is_climbing = False
 
         self.direction = 1
@@ -99,13 +102,24 @@ class Entity:
 
 
 
-    def check_collisions(self, colliders: list):
+    def check_collisions(self, colliders: List[Collider]) -> Dict[str, Union[Collider, None]]:
         """Handles collisions between this entity and colliders on a given list
 
         Args:
             colliders (list): the list of colliders in the level
+
+        Returns:
+            Dict[str, Union[Collider, None]]: the colliders that the entity collided with
         """
         self.is_colliding = False
+        self.is_grounded = False
+
+        collisions = {
+            "top": None,
+            "bottom": None,
+            "left": None,
+            "right": None
+        }
 
         # iterate through colliders
         for collider in colliders:
@@ -141,6 +155,8 @@ class Entity:
                     self.bounding_box.bottom = collider.bounding_box.top
                     self.vel.y = 0
                     self.is_jumping = False
+                    self.is_grounded = True
+                    collisions["top"] = collider
 
                     # calculate friction when the entity is not moving
                     if not self.is_moving:
@@ -155,14 +171,19 @@ class Entity:
                 elif min_dist == "left":
                     self.bounding_box.right = collider.bounding_box.left
                     self.vel.x = 0
+                    collisions["left"] = collider
                 elif min_dist == "right":
                     self.bounding_box.left = collider.bounding_box.right
                     self.vel.x = 0
+                    collisions["right"] = collider
                 else:
                     self.bounding_box.top = collider.bounding_box.bottom
                     self.vel.y = 0
+                    collisions["bottom"] = collider
 
                 self.pos.update(self.bounding_box.midbottom)
+
+        return collisions
 
 
     def show_bounding_box(self, canvas: Surface):

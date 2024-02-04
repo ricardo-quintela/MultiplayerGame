@@ -17,6 +17,9 @@ entities:
   acc_x: 5
   jump_height: 25
 
+enemies:
+  player_detection_ray_size: 200
+
 animations:
   leg_climbing_acc: 1
   leg_target: 50

@@ -8,7 +8,7 @@ from window import Window
 from events import GameEvents
 from utils import MovementKeys
 
-from entities import Player
+from entities import Player, Enemy
 
 from config import MAPS
 from maps import Map
@@ -43,6 +43,11 @@ class Game:
         self.player.current_room.update(self.map.map_size // 2, self.map.map_size // 2)
 
 
+        # enemy
+        self.enemy = Enemy((30,250))
+        self.enemy.set_pos((100,400))
+
+
 
     def update_display(self):
         """Updates the pygame display and renders objects on screen
@@ -51,6 +56,12 @@ class Game:
         #! BACKGROUND
         # fill the canvas with white
         self.canvas.fill("white")
+
+
+        # TODO: SET AS ROOM DEPENDANT
+        #! ENEMIES
+        self.enemy.blit(self.canvas)
+        self.enemy.show_bounding_box(self.canvas)
 
 
         #! PLAYER
@@ -100,6 +111,10 @@ class Game:
 
             #! MAP
             current_map_room = self.map.get_room(self.player.current_room)
+
+            #! ENEMIES
+            self.enemy.update(current_map_room.colliders, self.player)
+
 
             #! PLAYER
             self.player.move(movement_keys)

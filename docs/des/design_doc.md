@@ -89,7 +89,7 @@ Antes de cada jogo, o jogador escolhe 3 perks que lhe darão certas vantagens ou
 
 O mapa é gerado através do algoritmo Wave Function Collapse que pega num conjunto de regras sobre como as diferentes salas se conectam entre si e gera um mapa com o tamanho desejado
 
-## Salas
+### Salas
 
 Começar-se-à numa sala comum (principal) e os 2 jogadores ficam sparados (podem haver várias variações)
 
@@ -99,12 +99,12 @@ Começar-se-à numa sala comum (principal) e os 2 jogadores ficam sparados (pode
 ![salas](salas.png)
 
 
-### Estruturas e diferenças
+#### Estruturas e diferenças
 
 Vão haver várias estruturas para cada bioma ou "nível"
 
 
-### Camadas
+#### Camadas
 
 Para desenhar as salas, diferentes camadas precisam de ser tidas em conta, já que são diferentes camadas da pipeline de renderização.
 
@@ -116,4 +116,16 @@ Para desenhar as salas, diferentes camadas precisam de ser tidas em conta, já q
 - detalhes1
 - parallax
 - background
+
+
+## Minions (inimigos)
+
+Vão haver vários tipos de inimigos para farmar
+
+
+### IA
+
+Os mais comuns:
+- vão seguir a direção do jogador assim que o virem
+- enquanto não o virem andam para trás e para a frente na sua plataforma ou ficam quietos (dependendo do tipo de inimigo)
 

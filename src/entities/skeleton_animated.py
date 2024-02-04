@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List
+from typing import Dict, List, Union
 from json import load
 
 from pygame import Surface
@@ -129,7 +129,7 @@ class SkeletonAnimated(Entity):
         self.keyframe_updater = 0
 
 
-    def update(self, colliders: List[Collider]):
+    def update(self, colliders: List[Collider]) -> Dict[str, Union[Collider, None]]:
         """Makes the necessary computations to update the physics of the entity
         and handles model animations
         """
@@ -141,7 +141,7 @@ class SkeletonAnimated(Entity):
         super().update()
 
         #? COLLISIONS
-        self.check_collisions(colliders)
+        collisions = self.check_collisions(colliders)
 
         #? updates the model's bones
         # move the origin of the model to the position of
@@ -156,6 +156,8 @@ class SkeletonAnimated(Entity):
         self.keyframe_updater = (self.keyframe_updater + 1) % ANIMATION_FRAME_SKIP
 
         self.animate(self.current_animation, colliders)
+
+        return collisions
 
 
     def blit(self, canvas: Surface):
