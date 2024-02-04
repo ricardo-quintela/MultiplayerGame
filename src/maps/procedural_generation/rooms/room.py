@@ -9,6 +9,7 @@ from pygame.draw import rect
 
 from blocks import Collider
 from config import MAPS
+from entities import Enemy
 
 from .json_types import JSONMap, MapFormat, MissingProperty, JSONTileset
 
@@ -39,6 +40,10 @@ class Room:
         # layers
         self.block_layer: Surface = Surface(MAPS["room_size"])
         self.block_layer.set_colorkey((0, 0, 0))
+
+
+        self.enemies: List[Enemy] = list()
+
 
     def show_bounding_boxes(self, canvas: Surface):
         """Draws the bounding_boxes of all the colliders
@@ -167,17 +172,28 @@ class Room:
         # create colliders and guarantee that they have the friction attribute
         for json_collider in json_room["layers"][5]["objects"]:
 
-            if json_collider["properties"][0]["name"] != "friction":
+            if json_collider["properties"][-1]["name"] != "friction":
                 logging.fatal("Property at collider missing: 'friction'")
                 raise MissingProperty("Property at collider missing: 'friction'")
 
-            room.colliders.append(
-                Collider(
+            # create a collider with the read properties
+            collider = Collider(
                     (json_collider["x"], json_collider["y"]),
                     (json_collider["width"], json_collider["height"]),
-                    json_collider["properties"][0]["value"],
+                    json_collider["properties"][-1]["value"],
                 )
-            )
+
+            # add the collider to the room
+            room.colliders.append(collider)
+
+            # spawn enemies in the room
+            if len(json_collider["properties"]) > 1 and json_collider["properties"][-2]["name"] == "enemies_spawnable":
+                enemy = Enemy((30,250))
+                enemy.set_pos(collider.bounding_box.midtop)
+                room.enemies.append(enemy)
+                print("spawned enemy")
+
+
 
         logging.info("Room loaded successfully")
         return room

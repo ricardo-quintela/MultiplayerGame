@@ -64,15 +64,16 @@ class Enemy(SkeletonAnimated):
             self.is_moving = False
 
         #! Player detection
-        # update detection ray
-        self.detection_ray.update(
-            self.model.get_bone("pescoco").a +
-            self.direction * Vector2(ENEMIES["player_detection_ray_size"], 0) +
-            self.vel
-        )
-
         # check intersection between player's bounding box and the detection ray
         if not self.detected_player:
+
+            # update detection ray to a fixed distance
+            self.detection_ray.update(
+                self.model.get_bone("pescoco").a +
+                self.direction * Vector2(ENEMIES["player_detection_ray_size"], 0) +
+                self.vel
+            )
+
             self.detected_player = collideline(
                 (self.model.get_bone("pescoco").a, self.detection_ray),
                 player.bounding_box
@@ -80,8 +81,11 @@ class Enemy(SkeletonAnimated):
 
         # if the player has been detected then follow him
         else:
+            self.detection_ray.update(player.bounding_box.center)
+
             self.distance_from_player = self.pos.x - player.pos.x
             self.direction = -1 if self.distance_from_player > 0 else 1
+
 
 
         # change the state depending on the animation

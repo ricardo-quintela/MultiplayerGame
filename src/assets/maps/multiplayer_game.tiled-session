@@ -29,8 +29,8 @@
             "scale": 0.9525,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 486.08923884514434,
-                "y": 291.8635170603674
+                "x": 485.03937007874015,
+                "y": 290.81364829396324
             }
         },
         "rooms/proof_of_concept_room_down.json": {
@@ -40,8 +40,8 @@
             "scale": 0.9915624999999999,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 479.0419161676647,
-                "y": 271.2890009454775
+                "x": 480.0504254648598,
+                "y": 272.29751024267256
             }
         },
         "rooms/proof_of_concept_room_left.json": {
@@ -70,8 +70,8 @@
             "scale": 0.9915624999999999,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 478.0334068704696,
-                "y": 270.2804916482824
+                "x": 480.0504254648598,
+                "y": 272.29751024267256
             }
         },
         "rooms/proof_of_concept_tileset.json": {
@@ -110,7 +110,7 @@
         "rooms/proof_of_concept_room.json"
     ],
     "project": "multiplayer_game.tiled-project",
-    "property.type": "float",
+    "property.type": "string",
     "recentFiles": [
         "rooms/proof_of_concept_room_left.tmj",
         "rooms/proof_of_concept_room_right.json",

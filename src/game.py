@@ -8,7 +8,7 @@ from window import Window
 from events import GameEvents
 from utils import MovementKeys
 
-from entities import Player, Enemy
+from entities import Player
 
 from config import MAPS
 from maps import Map
@@ -39,13 +39,11 @@ class Game:
 
         # player
         self.player = Player((30,250))
-        self.player.set_pos((400,400))
+        self.player.set_pos((900,400))
         self.player.current_room.update(self.map.map_size // 2, self.map.map_size // 2)
 
 
-        # enemy
-        self.enemy = Enemy((30,250))
-        self.enemy.set_pos((100,400))
+
 
 
 
@@ -57,11 +55,14 @@ class Game:
         # fill the canvas with white
         self.canvas.fill("white")
 
+        # getting the current room
+        current_map_room = self.map.get_room(self.player.current_room)
 
         # TODO: SET AS ROOM DEPENDANT
         #! ENEMIES
-        self.enemy.blit(self.canvas)
-        self.enemy.show_bounding_box(self.canvas)
+        for enemy in current_map_room.enemies:
+            enemy.blit(self.canvas)
+            enemy.show_bounding_box(self.canvas)
 
 
         #! PLAYER
@@ -70,12 +71,11 @@ class Game:
 
 
         #! DRAWING THE ROOM BLOCKS
-        room = self.map.get_room(self.player.current_room)
-        self.canvas.blit(room.block_layer, (0,0))
+        self.canvas.blit(current_map_room.block_layer, (0,0))
 
 
         #! SHOWING THE COLLIDERS (DEBUG)
-        room.show_bounding_boxes(self.canvas)
+        current_map_room.show_bounding_boxes(self.canvas)
 
         #* DEBUGGING
         circle(self.canvas, "green", self.player.model.origin, 4)
@@ -113,7 +113,8 @@ class Game:
             current_map_room = self.map.get_room(self.player.current_room)
 
             #! ENEMIES
-            self.enemy.update(current_map_room.colliders, self.player)
+            for enemy in current_map_room.enemies:
+                enemy.update(current_map_room.colliders, self.player)
 
 
             #! PLAYER
