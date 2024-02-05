@@ -88,7 +88,7 @@ class JSONLayer(TypedDict):
     encoding: Literal["csv", "base64"]
     height: int
     id: int
-    name: str
+    name: Literal["background", "parallax", "detail1", "block", "detail2", "collider", "poi"]
     objects: Optional[List[JSONMapObject]]
     offsetx: int
     offsety: int

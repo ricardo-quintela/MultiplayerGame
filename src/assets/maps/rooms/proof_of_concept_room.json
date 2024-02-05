@@ -83,11 +83,6 @@
                  "name":"",
                  "properties":[
                         {
-                         "name":"enemies_spawnable",
-                         "type":"string",
-                         "value":"enemy"
-                        }, 
-                        {
                          "name":"friction",
                          "type":"float",
                          "value":2
@@ -143,7 +138,25 @@
          "draworder":"topdown",
          "id":5,
          "name":"poi",
-         "objects":[],
+         "objects":[
+                {
+                 "height":0,
+                 "id":16,
+                 "name":"",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"enemy_spawner",
+                         "type":"bool",
+                         "value":true
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":160,
+                 "y":448
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -151,7 +164,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":16,
+ "nextobjectid":17,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"git",

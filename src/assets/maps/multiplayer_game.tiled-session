@@ -3,10 +3,10 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "rooms/proof_of_concept_room.json",
+    "activeFile": "rooms/proof_of_concept_room_left.json",
     "expandedProjectPaths": [
-        ".",
-        "rooms"
+        "rooms",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -24,13 +24,14 @@
         },
         "rooms/proof_of_concept_room.json": {
             "expandedObjectLayers": [
-                4
+                4,
+                5
             ],
             "scale": 0.9525,
-            "selectedLayer": 5,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 485.03937007874015,
-                "y": 290.81364829396324
+                "x": 483.98950131233596,
+                "y": 289.763779527559
             }
         },
         "rooms/proof_of_concept_room_down.json": {
@@ -40,16 +41,19 @@
             "scale": 0.9915624999999999,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 480.0504254648598,
-                "y": 272.29751024267256
+                "x": 479.0419161676647,
+                "y": 272.80176489127007
             }
         },
         "rooms/proof_of_concept_room_left.json": {
+            "expandedObjectLayers": [
+                4
+            ],
             "scale": 0.9915624999999999,
-            "selectedLayer": 0,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 480.0504254648598,
-                "y": 272.29751024267256
+                "x": 477.0248975732745,
+                "y": 269.27198235108733
             }
         },
         "rooms/proof_of_concept_room_left.tmj": {
@@ -70,8 +74,8 @@
             "scale": 0.9915624999999999,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 480.0504254648598,
-                "y": 272.29751024267256
+                "x": 479.0419161676647,
+                "y": 271.79325559407505
             }
         },
         "rooms/proof_of_concept_tileset.json": {
@@ -103,20 +107,19 @@
     "map.tileWidth": 32,
     "map.width": 30,
     "openFiles": [
-        "rooms/proof_of_concept_room_left.tmj",
         "rooms/proof_of_concept_room_right.json",
         "rooms/proof_of_concept_room_down.json",
         "rooms/proof_of_concept_room_left.json",
         "rooms/proof_of_concept_room.json"
     ],
     "project": "multiplayer_game.tiled-project",
-    "property.type": "string",
+    "property.type": "bool",
     "recentFiles": [
-        "rooms/proof_of_concept_room_left.tmj",
         "rooms/proof_of_concept_room_right.json",
         "rooms/proof_of_concept_room_down.json",
-        "rooms/proof_of_concept_room_left.json",
         "rooms/proof_of_concept_room.json",
+        "rooms/proof_of_concept_room_left.json",
+        "rooms/proof_of_concept_room_left.tmj",
         "rooms/proof_of_concept_tileset.json",
         "rooms/blueprint.json",
         "rooms/test_room.json",

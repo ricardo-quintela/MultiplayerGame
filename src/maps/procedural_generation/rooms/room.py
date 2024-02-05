@@ -172,7 +172,7 @@ class Room:
         # create colliders and guarantee that they have the friction attribute
         for json_collider in json_room["layers"][5]["objects"]:
 
-            if json_collider["properties"][-1]["name"] != "friction":
+            if json_collider["properties"][0]["name"] != "friction":
                 logging.fatal("Property at collider missing: 'friction'")
                 raise MissingProperty("Property at collider missing: 'friction'")
 
@@ -180,18 +180,31 @@ class Room:
             collider = Collider(
                     (json_collider["x"], json_collider["y"]),
                     (json_collider["width"], json_collider["height"]),
-                    json_collider["properties"][-1]["value"],
+                    json_collider["properties"][0]["value"],
                 )
 
             # add the collider to the room
             room.colliders.append(collider)
 
-            # spawn enemies in the room
-            if len(json_collider["properties"]) > 1 and json_collider["properties"][-2]["name"] == "enemies_spawnable":
+
+        # creating POIs
+        for poi in json_room["layers"][6]["objects"]:
+
+            # enemy spawning
+            if poi["properties"][0]["name"] == "enemy_spawner":
+
+                # this value is supposed to be a boolean that signifies that the spawner is active
+                if not poi["properties"][0]["value"]:
+                    continue
+
+                # spawn enemies in the room
                 enemy = Enemy((30,250))
-                enemy.set_pos(collider.bounding_box.midtop)
+                enemy.set_pos((poi["x"], poi["y"]))
                 room.enemies.append(enemy)
-                print("spawned enemy")
+
+            else:
+                logging.fatal("POI has missing properties")
+                raise MissingProperty("POI has missing properties")
 
 
 
