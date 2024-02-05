@@ -49,6 +49,15 @@ class SkeletonAnimated(Entity):
         self.load_animations(animation_paths, scale)
 
 
+    def set_pos(self, pos: tuple):
+        super().set_pos(pos)
+
+        vector = self.model.origin - self.model.skeleton_anchor.get_pos()
+
+        self.model.set_origin(self.pos)
+        self.model.skeleton_anchor.set_pos(self.model.origin - vector)
+
+
     def load_animations(self, animation_paths: Dict[str, str], scale: float = 1.0):
         """Loads all the animations of the model from the
         corresponding json files
@@ -135,8 +144,6 @@ class SkeletonAnimated(Entity):
         """
         self.is_climbing = False
 
-        vector = self.model.origin - self.model.skeleton_anchor.a
-
         # calculate position based on velocity
         super().update()
 
@@ -146,8 +153,8 @@ class SkeletonAnimated(Entity):
         #? updates the model's bones
         # move the origin of the model to the position of
         # the bounding_box and update the anchor bone as well
-        self.model.set_origin(self.pos)
-        self.model.skeleton_anchor.a.update(self.model.origin - vector)
+        self.model.origin += self.vel
+        self.model.skeleton_anchor.set_pos(self.model.skeleton_anchor.get_pos() + self.vel)
 
         # update the skeleton object
         self.model.update()

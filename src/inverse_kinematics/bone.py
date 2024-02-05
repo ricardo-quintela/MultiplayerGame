@@ -62,7 +62,8 @@ class Bone:
 
 
     def set_pos(self, pos: tuple):
-        """Sets a new position for the bone\n
+        """Sets a new position for the bone
+
         It will mantain it's previous length and angle
 
         Args:
@@ -70,6 +71,12 @@ class Bone:
         """
 
         self.a.update(pos)
+
+
+    def get_pos(self) -> tuple:
+        """Returns the bone's current position
+        """
+        return (self.a.x, self.a.y)
 
 
     def fixate(self, target: Vector2, attachment_point_name: str):
