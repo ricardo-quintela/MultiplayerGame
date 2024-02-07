@@ -91,7 +91,7 @@ class Enemy(SkeletonAnimated):
         # change the state depending on the animation
         if previous_is_moving ^ self.is_moving:
             if self.is_moving:
-                self.change_animation_state("walking")
+                self.change_animation_state("running")
                 return
             self.change_animation_state("idling")
 

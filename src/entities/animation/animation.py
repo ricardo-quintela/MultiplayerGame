@@ -16,6 +16,7 @@ class Animation:
     def __init__(self) -> None:
         self.name = ""
         self.num_keyframes = 0
+        self.skeleton_anchor_keyframes: List[Vector2] = list()
         self.keyframes: List[Keyframe] = list()
 
 
@@ -38,11 +39,20 @@ class Animation:
         for json_keyframe in json_animation['keyframes']:
 
             keyframe = {
-                bone_name: (Vector2(target_point) * scale, direction)
+                bone_name: (
+                    Vector2(int(target_point[0]), int(target_point[1])) * scale,
+                    direction
+                )
                 for bone_name, (target_point, direction) in json_keyframe.items()
             }
 
             animation.keyframes.append(keyframe)
+
+        # convert the skeleton anchor position to pygame Vector2
+        for anchor_keyframe in json_animation['skeletonAnchorKeyframes']:
+            animation.skeleton_anchor_keyframes.append(
+                Vector2(int(anchor_keyframe[0]), int(anchor_keyframe[1])) * scale
+            )
 
         return animation
 

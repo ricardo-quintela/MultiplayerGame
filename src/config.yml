@@ -28,11 +28,11 @@ animations:
   animation_paths:
     player:
       idling: "assets/animations/player/idling.json"
-      walking: "assets/animations/player/walking.json"
+      running: "assets/animations/player/running.json"
 
 models:
   player: "assets/models/player.json"
-  scale: 0.30
+  scale: 0.3
 
 maps:
   room_size: [960,544]

@@ -102,6 +102,15 @@ class SkeletonAnimated(Entity):
             self.current_keyframe += 1
             if self.current_keyframe == self.animations[animation_name].num_keyframes:
                 self.current_keyframe = 0
+        
+
+        skeleton_anchor = self.animations[animation_name].skeleton_anchor_keyframes[self.current_keyframe]
+
+        self.model.skeleton_anchor.b.update(
+            self.model.origin - (skeleton_anchor.x * self.direction, skeleton_anchor.y)
+        )
+        self.model.skeleton_anchor.calculate_other()
+
 
         keyframe = self.animations[animation_name].keyframes[self.current_keyframe]
         for bone_name, target in keyframe.items():
@@ -117,13 +126,8 @@ class SkeletonAnimated(Entity):
                 target[1] * self.direction
             )
 
-            logging.debug(
-                "ANIMATION_UPDATE: current_keyframe: %s | bone: %s | target_pos: %s | direction: %s",
-                self.current_keyframe,
-                bone_name,
-                self.pos + target[0],
-                target[1]
-            )
+        # update the skeleton object
+        self.model.update()
 
 
     def change_animation_state(self, animation_state: str):
@@ -144,8 +148,12 @@ class SkeletonAnimated(Entity):
         """
         self.is_climbing = False
 
+        vector = self.model.origin - self.model.skeleton_anchor.get_pos()
+
+
         # calculate position based on velocity
         super().update()
+
 
         #? COLLISIONS
         collisions = self.check_collisions(colliders)
@@ -153,11 +161,8 @@ class SkeletonAnimated(Entity):
         #? updates the model's bones
         # move the origin of the model to the position of
         # the bounding_box and update the anchor bone as well
-        self.model.origin += self.vel
-        self.model.skeleton_anchor.set_pos(self.model.skeleton_anchor.get_pos() + self.vel)
-
-        # update the skeleton object
-        self.model.update()
+        self.model.set_origin(self.pos)
+        self.model.skeleton_anchor.set_pos(self.model.origin - vector)
 
         #? ANIMATIONS
         self.keyframe_updater = (self.keyframe_updater + 1) % ANIMATION_FRAME_SKIP
