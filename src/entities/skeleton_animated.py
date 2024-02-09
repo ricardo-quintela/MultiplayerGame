@@ -78,7 +78,7 @@ class SkeletonAnimated(Entity):
             with open(animation_path, "r", encoding="utf-8") as animation_file:
                 json_animation: JSONAnimation = load(animation_file)
 
-            animation = Animation.from_json(json_animation, scale)
+            animation = Animation.from_json(json_animation, self.model, scale)
 
             self.animations[animation_name] = animation
 
@@ -106,6 +106,7 @@ class SkeletonAnimated(Entity):
         if self.current_animation is None:
             return
 
+
         self.keyframe_updater = (self.keyframe_updater + 1) % ANIMATION_FRAME_SKIP
 
         if self.keyframe_updater == 0:
@@ -114,7 +115,6 @@ class SkeletonAnimated(Entity):
             if self.current_keyframe == self.animations[animation_name].num_keyframes:
                 self.current_keyframe = 0
 
-
         skeleton_anchor = self.animations[animation_name].skeleton_anchor_keyframes[self.current_keyframe]
 
         self.model.skeleton_anchor.b.update(
@@ -122,8 +122,9 @@ class SkeletonAnimated(Entity):
         )
         self.model.skeleton_anchor.calculate_other()
 
+
         keyframe = self.animations[animation_name].keyframes[self.current_keyframe]
-        for bone_name, target in keyframe.items():
+        for bone_name in self.animations[animation_name].bones_order:
             # try to get a limb
             bone = self.model.get_limb(bone_name)
 
@@ -131,16 +132,12 @@ class SkeletonAnimated(Entity):
             if bone is None:
                 bone = self.model.get_bone(bone_name)
 
+            bone.update()
             bone.follow(
-                self.model.origin + (target[0].x * self.direction, target[0].y),
-                target[1] * self.direction
+                self.model.origin + (keyframe[bone_name][0].x * self.direction, keyframe[bone_name][0].y),
+                keyframe[bone_name][1] * self.direction
             )
 
-        # update the skeleton object
-        self.model.update()
-
-
-        # TODO: FIX ANGLE DIFFERENCE IN THE FIRST FRAME
         # update the weapons
         if self.weapon is not None:
             self.weapon.update(self.direction)

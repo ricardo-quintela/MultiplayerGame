@@ -2,9 +2,13 @@ from typing import Dict, List, Tuple, TypedDict
 
 from pygame import Vector2
 
+from inverse_kinematics import Skeleton
+
 JSONKeyframe = Dict[str, Tuple[Tuple[int], int]]
 
 Keyframe = Dict[str, Tuple[Vector2, int]]
+
+BoneName = str
 
 class JSONAnimation(TypedDict):
     keyframeNum: int
@@ -18,10 +22,11 @@ class Animation:
         self.num_keyframes = 0
         self.skeleton_anchor_keyframes: List[Vector2] = list()
         self.keyframes: List[Keyframe] = list()
+        self.bones_order: List[BoneName] = list()
 
 
     @classmethod
-    def from_json(cls, json_animation: JSONAnimation, scale: float = 1.0):
+    def from_json(cls, json_animation: JSONAnimation, skeleton: Skeleton, scale: float = 1.0):
         """Creates an instance of an Animation from json
 
         Args:
@@ -53,6 +58,16 @@ class Animation:
             animation.skeleton_anchor_keyframes.append(
                 Vector2(int(anchor_keyframe[0]), int(anchor_keyframe[1])) * scale
             )
+
+
+        # the order that the bones should be animated
+        for bone_name in animation.keyframes[0]:
+            if skeleton.get_limb(bone_name) is None:
+                animation.bones_order.insert(0, bone_name)
+                continue
+            animation.bones_order.append(bone_name)
+
+        print(animation.bones_order)
 
         return animation
 
