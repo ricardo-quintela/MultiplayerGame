@@ -7,8 +7,9 @@ from pygame import Surface
 from config import ANIMATIONS
 from blocks import Collider
 from inverse_kinematics import Skeleton
-from .animation import Animation, JSONAnimation
+from weapons import Weapon
 
+from .animation import Animation, JSONAnimation
 from .entity import Entity
 
 ANIMATION_FRAME_SKIP: int = int(1 / ANIMATIONS["animation_speed"])
@@ -48,6 +49,9 @@ class SkeletonAnimated(Entity):
         self.animations: Dict[str, Animation] = dict()
         self.load_animations(animation_paths, scale)
 
+        # weapons
+        self.weapon: Weapon = None
+
 
     def set_pos(self, pos: tuple):
         super().set_pos(pos)
@@ -85,6 +89,11 @@ class SkeletonAnimated(Entity):
             )
 
 
+    def set_weapon(self, weapon: Weapon):
+        self.weapon = weapon
+        self.weapon.attach(self.model.get_bone("braco_d"))
+
+
 
     def animate(self, animation_name: str, colliders: list):
         """Animates each model bone with a list of points
@@ -97,12 +106,14 @@ class SkeletonAnimated(Entity):
         if self.current_animation is None:
             return
 
+        self.keyframe_updater = (self.keyframe_updater + 1) % ANIMATION_FRAME_SKIP
+
         if self.keyframe_updater == 0:
 
             self.current_keyframe += 1
             if self.current_keyframe == self.animations[animation_name].num_keyframes:
                 self.current_keyframe = 0
-        
+
 
         skeleton_anchor = self.animations[animation_name].skeleton_anchor_keyframes[self.current_keyframe]
 
@@ -110,7 +121,6 @@ class SkeletonAnimated(Entity):
             self.model.origin - (skeleton_anchor.x * self.direction, skeleton_anchor.y)
         )
         self.model.skeleton_anchor.calculate_other()
-
 
         keyframe = self.animations[animation_name].keyframes[self.current_keyframe]
         for bone_name, target in keyframe.items():
@@ -128,6 +138,13 @@ class SkeletonAnimated(Entity):
 
         # update the skeleton object
         self.model.update()
+
+
+        # TODO: FIX ANGLE DIFFERENCE IN THE FIRST FRAME
+        # update the weapons
+        if self.weapon is not None:
+            self.weapon.update(self.direction)
+
 
 
     def change_animation_state(self, animation_state: str):
@@ -164,12 +181,17 @@ class SkeletonAnimated(Entity):
         self.model.set_origin(self.pos)
         self.model.skeleton_anchor.set_pos(self.model.origin - vector)
 
-        #? ANIMATIONS
-        self.keyframe_updater = (self.keyframe_updater + 1) % ANIMATION_FRAME_SKIP
-
         self.animate(self.current_animation, colliders)
 
         return collisions
+
+
+    def show_bounding_box(self, canvas: Surface):
+        super().show_bounding_box(canvas)
+
+        # show the weapon's hitbox
+        if self.weapon is not None:
+            self.weapon.show_hitbox(canvas)
 
 
     def blit(self, canvas: Surface):

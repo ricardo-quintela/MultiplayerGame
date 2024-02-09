@@ -113,7 +113,7 @@ class Bone:
             target (Vector2): the target to follow
         """
 
-        self.angle += (self.other - self.attachment).angle_to(target - self.attachment)
+        self.angle = (self.angle + (self.other - self.attachment).angle_to(target - self.attachment)) % 360
 
         self.calculate_other()
 
@@ -125,7 +125,7 @@ class Bone:
         Args:
             angle (int): the angle of the bone
         """
-        self.angle = angle
+        self.angle = angle % 360
 
 
     def update(self):
@@ -136,6 +136,7 @@ class Bone:
             self.a.update(self.anchor)
 
         self.calculate_b()
+
 
 
     def blit(self, canvas: Surface):

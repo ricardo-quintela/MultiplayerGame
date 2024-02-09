@@ -9,6 +9,7 @@ from events import GameEvents
 from utils import MovementKeys
 
 from entities import Player
+from weapons import Weapon
 
 from config import MAPS
 from maps import Map
@@ -42,6 +43,9 @@ class Game:
         self.player.set_pos((900,400))
         self.player.current_room.update(self.map.map_size // 2, self.map.map_size // 2)
 
+        # weapon
+        self.player.set_weapon(Weapon((0,0), 30, -45))
+
 
 
 
@@ -58,7 +62,7 @@ class Game:
         # getting the current room
         current_map_room = self.map.get_room(self.player.current_room)
 
-        # TODO: SET AS ROOM DEPENDANT
+
         #! ENEMIES
         for enemy in current_map_room.enemies:
             enemy.blit(self.canvas)
@@ -120,6 +124,8 @@ class Game:
             #! PLAYER
             self.player.move(movement_keys)
             self.player.update(current_map_room.colliders)
+
+
 
             #! MAP NAVIGATION
             if self.player.bounding_box.right < 0 and self.map.get_room(self.player.current_room + (-1,0)) is not None:

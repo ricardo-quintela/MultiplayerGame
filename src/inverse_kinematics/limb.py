@@ -108,13 +108,10 @@ class Limb:
             raise LimbTooLongException("Not enough bones on " + self.name)
 
         # precisamos de um end effector -> target
-        end_effector = Vector2(target)
-
+        end_effector = target
 
         # temos que calcular o vetor do end effector
         end_effector_vector = end_effector - self.bones[0].a
-
-
 
         # precisamos do angulo do vetor do end effector
         end_effector_vector_angle = atan2(end_effector_vector.y, end_effector_vector.x)
@@ -126,7 +123,7 @@ class Limb:
             )
 
         # precisamos da distancia do ombro ao end effector
-        distance = Vector2(cos(end_effector_vector_angle) * d, sin(end_effector_vector_angle) * d)
+        distance = Vector2(cos(end_effector_vector_angle), sin(end_effector_vector_angle)) * d
 
 
 
@@ -164,7 +161,6 @@ class Limb:
     def update(self):
         """Updates all the bones in the skeleton
         """
-
         if self.anchor is not None and self.bones:
             self.attachment.update(self.anchor)
 

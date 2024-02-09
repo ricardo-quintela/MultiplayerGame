@@ -48,3 +48,4 @@ debugging:
   entity_bbox_color: [0,0,255]
   collider_bbox_color: [255,0,0]
   skeleton_bone_color: [225,240,0]
+  weapon_hbox_color: [255,0,255]
