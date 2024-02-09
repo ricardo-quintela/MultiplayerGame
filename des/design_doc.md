@@ -60,6 +60,8 @@ As armas também poderão levar outras modificações para ficarem mais fortes
 - Soqueiras
 - Machados
 
+![modelo das armas](modelo_das_armas.png)
+
 
 
 ---
