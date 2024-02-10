@@ -1,12 +1,11 @@
 from typing import List
 
 from pygame import Surface, Vector2
-from pygame.draw import line, circle
+from pygame.draw import line
 
 
 from config import ENTITIES, MODELS, ANIMATIONS, ENEMIES
 from blocks import Collider
-from utils import collideline
 
 from .skeleton_animated import SkeletonAnimated
 from .player import Player
@@ -74,9 +73,8 @@ class Enemy(SkeletonAnimated):
                 self.vel
             )
 
-            self.detected_player = collideline(
-                (self.model.get_bone("pescoco").a, self.detection_ray),
-                player.bounding_box
+            self.detected_player = player.bounding_box.collideline(
+                (self.model.get_bone("pescoco").a, self.detection_ray)
             )
 
         # if the player has been detected then follow him

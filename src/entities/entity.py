@@ -1,8 +1,9 @@
 import logging
 from typing import Dict, List, Union
-from pygame import Rect, Surface, Vector2
+from pygame import Surface, Vector2
 from pygame.draw import rect
 
+from utils import BoundingBox
 from blocks import Collider
 
 from config import PHYSICS, ENTITIES, DEBUG
@@ -22,7 +23,7 @@ class Entity:
         """
         self.pos = Vector2(0,0)
 
-        self.bounding_box = Rect((0,0), bounding_box_size)
+        self.bounding_box = BoundingBox((0,0), bounding_box_size)
 
         # velocity
         self.vel = Vector2(0,0)

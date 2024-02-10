@@ -66,7 +66,6 @@ class Map:
         map_string = ""
         for line in self.map_rooms:
             map_string += str(line) + "\n"
-        logging.info("MAP:\n%s\n", map_string)
 
 
 

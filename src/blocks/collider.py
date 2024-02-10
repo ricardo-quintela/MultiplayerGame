@@ -1,6 +1,7 @@
-from pygame import Rect, Surface
+from pygame import Surface
 from pygame.draw import rect
 
+from utils import BoundingBox
 from config import DEBUG
 
 
@@ -14,7 +15,7 @@ class Collider:
             friction (tuple): the ammount of friction that the surface has
         """
 
-        self.bounding_box = Rect(pos, size)
+        self.bounding_box = BoundingBox(pos, size)
 
         self.friction = friction
 

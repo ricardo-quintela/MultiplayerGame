@@ -12,11 +12,14 @@ class Weapon:
     def __init__(self, start_pos: Union[Vector2, Tuple[int, int]], length: int, angle: float = 0) -> None:
         self.angle = angle
         self.length = length
-        self.a = Vector2(start_pos)
+        self.follow_line = [
+            Vector2(start_pos),
+            Vector2(0,0)
+        ]
 
         self.attachment: Bone = None
-        self.b = Vector2(0,0)
         self.calculate_b(1)
+
 
 
     def calculate_b(self, direction: int):
@@ -28,7 +31,7 @@ class Weapon:
 
         angle_compensation = 0 if direction == 1 else 90
         angle = self.angle + angle_compensation + self.attachment.angle
-        self.b = self.a + self.length * Vector2(
+        self.follow_line[1] = self.follow_line[0] + self.length * Vector2(
             cos(radians(angle)),
             sin(radians(angle)),
         )
@@ -41,7 +44,7 @@ class Weapon:
             bone (Bone): the skeleton's bone
         """
         self.attachment = bone
-        self.a = bone.b
+        self.follow_line[0] = bone.b
 
 
     def update(self, direction: int):
@@ -57,4 +60,4 @@ class Weapon:
         Args:
             canvas (Surface): the surface where to draw the bounding box
         """
-        line(canvas, DEBUG["weapon_hbox_color"], self.a, self.b)
+        line(canvas, DEBUG["weapon_hbox_color"], self.follow_line[0], self.follow_line[1])
