@@ -61,6 +61,9 @@ class Weapon:
         """
         self.calculate_b(direction)
 
+        if self.hitbox is None:
+            return
+
         self.hitbox.set_pos(self.follow_line[1], -direction)
 
         angle = self.angle + self.attachment.angle if direction == -1 else (self.angle - self.attachment.angle + 180) % 360
@@ -75,4 +78,8 @@ class Weapon:
             canvas (Surface): the surface where to draw the bounding box
         """
         line(canvas, DEBUG["weapon_hbox_color"], self.follow_line[0], self.follow_line[1])
+
+        if self.hitbox is None:
+            return
+
         self.hitbox.blit(canvas)

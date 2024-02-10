@@ -12,7 +12,7 @@ from .player import Player
 
 
 class Enemy(SkeletonAnimated):
-    def __init__(self, bounding_box_size: tuple) -> None:
+    def __init__(self, bounding_box_size: tuple, distance_treshhold: int) -> None:
         super().__init__(
             bounding_box_size,
             MODELS["player"],
@@ -26,10 +26,11 @@ class Enemy(SkeletonAnimated):
         self.detection_ray = self.model.get_bone("pescoco").a.copy() + self.direction * (100, 0)
 
         self.distance_from_player = 0
+        self.distance_treshhold = distance_treshhold
 
 
     def move(self):
-        if abs(self.distance_from_player) < 100:
+        if abs(self.distance_from_player) < self.distance_treshhold:
             self.is_moving = False
 
         elif self.detected_player:

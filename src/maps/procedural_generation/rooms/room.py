@@ -198,7 +198,7 @@ class Room:
                     continue
 
                 # spawn enemies in the room
-                enemy = Enemy((30,250))
+                enemy = Enemy((30,250), 100)
                 enemy.set_pos((poi["x"], poi["y"]))
                 room.enemies.append(enemy)
 

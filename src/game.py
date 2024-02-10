@@ -43,9 +43,6 @@ class Game:
         self.player.set_pos((900,400))
         self.player.current_room.update(self.map.map_size // 2, self.map.map_size // 2)
 
-        # weapon
-        self.player.set_weapon(Weapon((0,0), 30, -45))
-
 
 
 
