@@ -49,8 +49,6 @@ class Game:
 
 
 
-
-
     def update_display(self):
         """Updates the pygame display and renders objects on screen
         """
@@ -144,8 +142,6 @@ class Game:
                 self.player.current_room += (0,-1)
                 self.player.set_pos((self.player.pos.x, 0))
                 self.player.vel.y -= 10
-
-
 
             self.fps_counter.setText(f"FPS: {self.root.get_fps():.0f}", (0,0,0))
 

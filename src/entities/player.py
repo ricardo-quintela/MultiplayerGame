@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from pygame import Surface, Vector2
 from pygame.draw import circle
 

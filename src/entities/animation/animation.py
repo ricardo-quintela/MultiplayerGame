@@ -67,8 +67,6 @@ class Animation:
                 continue
             animation.bones_order.append(bone_name)
 
-        print(animation.bones_order)
-
         return animation
 
 
