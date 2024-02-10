@@ -62,6 +62,16 @@ As armas também poderão levar outras modificações para ficarem mais fortes
 
 ![modelo das armas](modelo_das_armas.png)
 
+### Ataques
+
+As armas são liagadas aos ossos dos jogadores.
+
+Quando um jogador atacar, uma animação vai ser reproduzida e a arma, que está fixa ao osso, vai acompanhar o movimento do mesmo.
+
+Assim que a hitbox da arma colidir com a bounding box de um inimigo **durante a animação de ataque** o inimigo toma dano.
+
+![ataque](modelo_de_ataque.png)
+
 
 
 ---
