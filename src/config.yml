@@ -29,6 +29,8 @@ animations:
     player:
       idling: "assets/animations/player/idling.json"
       running: "assets/animations/player/running.json"
+    weapons:
+      sword_attack: "assets/animations/weapons/sword/sword_attack.json"
 
 models:
   player: "assets/models/player.json"

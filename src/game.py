@@ -6,10 +6,10 @@ from pygame.transform import scale
 
 from window import Window
 from events import GameEvents
-from utils import MovementKeys
+from utils import MovementKeys, AttackKeys
 
 from entities import Player
-from weapons import Weapon
+from weapons import Sword
 
 from config import MAPS
 from maps import Map
@@ -43,7 +43,7 @@ class Game:
         self.player.set_pos((900,400))
         self.player.current_room.update(self.map.map_size // 2, self.map.map_size // 2)
 
-        self.player.set_weapon(Weapon((0,0), 30, 270))
+        self.player.set_weapon(Sword(), "braco_e")
 
 
     def update_display(self):
@@ -107,6 +107,11 @@ class Game:
                 "jump": self.events.keyIsPressed("space")
             }
 
+            attack_keys: AttackKeys = {
+                "attack": self.events.getEvent("mouseButtons")[1],
+                "guard": self.events.getEvent("mouseButtons")[3]
+            }
+
 
             #! MAP
             current_map_room = self.map.get_room(self.player.current_room)
@@ -118,6 +123,7 @@ class Game:
 
             #! PLAYER
             self.player.move(movement_keys)
+            self.player.attack(attack_keys)
             self.player.update(current_map_room.colliders)
 
 

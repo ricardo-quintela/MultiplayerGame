@@ -19,15 +19,12 @@ class Weapon:
             Vector2(0,0)
         ]
 
+        self.attack_animation: str = None
+
         self.attachment: Bone = None
         self.calculate_b(1)
 
-        self.hitbox: Hitbox = Hitbox(
-            (0,0),
-            (0,5),
-            (50,2.5)
-        )
-        self.hitbox.set_pos(self.follow_line[0], 1)
+        self.hitbox: Hitbox = None
 
 
 
@@ -63,7 +60,7 @@ class Weapon:
         if self.hitbox is None:
             return
 
-        self.hitbox.set_pos(self.follow_line[1], -direction)
+        self.hitbox.set_pos(self.follow_line[1])
 
         angle = direction * self.angle + self.attachment.angle
         self.hitbox.set_rotation(angle)

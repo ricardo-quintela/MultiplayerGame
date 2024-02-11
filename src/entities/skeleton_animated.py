@@ -48,6 +48,7 @@ class SkeletonAnimated(Entity):
 
         self.animations: Dict[str, Animation] = dict()
         self.load_animations(animation_paths, scale)
+        self.finished_animation: bool = False
 
         # weapons
         self.weapon: Weapon = None
@@ -89,9 +90,9 @@ class SkeletonAnimated(Entity):
             )
 
 
-    def set_weapon(self, weapon: Weapon):
+    def set_weapon(self, weapon: Weapon, bone: str):
         self.weapon = weapon
-        self.weapon.attach(self.model.get_bone("braco_d"))
+        self.weapon.attach(self.model.get_bone(bone))
 
 
 
@@ -106,14 +107,7 @@ class SkeletonAnimated(Entity):
         if self.current_animation is None:
             return
 
-
-        self.keyframe_updater = (self.keyframe_updater + 1) % ANIMATION_FRAME_SKIP
-
-        if self.keyframe_updater == 0:
-
-            self.current_keyframe += 1
-            if self.current_keyframe == self.animations[animation_name].num_keyframes:
-                self.current_keyframe = 0
+        self.finished_animation = False
 
         skeleton_anchor = self.animations[animation_name].skeleton_anchor_keyframes[self.current_keyframe]
 
@@ -143,6 +137,16 @@ class SkeletonAnimated(Entity):
             self.weapon.update(self.direction)
 
 
+        self.keyframe_updater = (self.keyframe_updater + 1) % ANIMATION_FRAME_SKIP
+
+        if self.keyframe_updater == 0:
+
+            self.current_keyframe += 1
+            if self.current_keyframe == self.animations[animation_name].num_keyframes:
+                self.finished_animation = True
+                self.current_keyframe = 0
+
+
 
     def change_animation_state(self, animation_state: str):
         """Sets the new animation state and
@@ -154,6 +158,25 @@ class SkeletonAnimated(Entity):
         self.current_animation = animation_state
         self.current_keyframe = 0
         self.keyframe_updater = 0
+
+
+
+    def attack(self, attack_condition: bool, attack_animation: str, idle_animation: str):
+        """Changes the entity's state to an attack stance and
+        updates the attack counter
+
+        Args:
+            attack_condition (bool): weather the entity can initiate an attack
+        """
+        if attack_condition and not self.is_attacking:
+            self.is_attacking = True
+            self.attack_sequence += 1
+            self.change_animation_state(attack_animation)
+
+        if self.is_attacking and self.finished_animation:
+            self.is_attacking = False
+            self.change_animation_state(idle_animation)
+
 
 
     def update(self, colliders: List[Collider]) -> Dict[str, Union[Collider, None]]:

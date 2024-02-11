@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Literal
 from pygame import Surface, Vector2
 from pygame.draw import rect
 
@@ -32,13 +32,19 @@ class Entity:
         self.max_vel_x = max_vel_x
         self.max_vel_y = max_vel_y
 
-        self.is_colliding = False
-        self.is_moving = False
-        self.is_jumping = False
-        self.is_grounded = False
-        self.is_climbing = False
+        # states
+        self.is_colliding: bool = False
+        self.is_moving: bool = False
+        self.is_jumping: bool = False
+        self.is_grounded: bool = False
+        self.is_climbing: bool = False
+        self.is_attacking: bool = False
 
-        self.direction = 1
+
+        # attacking and combos
+        self.attack_sequence: int = 0
+
+        self.direction: Union[Literal[1], Literal[-1]] = 1
 
 
     def set_pos(self, pos: tuple):

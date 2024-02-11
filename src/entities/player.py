@@ -1,7 +1,7 @@
 from pygame import Surface, Vector2
 from pygame.draw import circle
 
-from utils import MovementKeys
+from utils import MovementKeys, AttackKeys
 from config import ENTITIES, ANIMATIONS, MODELS
 
 from .skeleton_animated import SkeletonAnimated
@@ -13,10 +13,15 @@ ANIMATION_FRAME_SKIP = 1 / ANIMATIONS["animation_speed"]
 class Player(SkeletonAnimated):
     def __init__(self, bounding_box_size) -> None:
         """Constructor of the class Player"""
+
+        animations = dict()
+        animations.update(ANIMATIONS["animation_paths"]["player"])
+        animations.update(ANIMATIONS["animation_paths"]["weapons"])
+
         super().__init__(
             bounding_box_size,
             MODELS["player"],
-            ANIMATIONS["animation_paths"]["player"],
+            animations,
             MODELS["scale"],
         )
 
@@ -34,6 +39,10 @@ class Player(SkeletonAnimated):
         Args:
             movement_keys (dict): the movement keys that are being pressed
         """
+        if self.is_attacking:
+            self.is_moving = False
+            return
+
         previous_is_moving = self.is_moving
 
         if movement_keys["left"]:
@@ -54,6 +63,17 @@ class Player(SkeletonAnimated):
                 self.change_animation_state("running")
                 return
             self.change_animation_state("idling")
+
+
+    def attack(self, attack_keys: AttackKeys):
+        """Changes the entity's state to an attack stance and
+        updates the attack counter
+
+        Args:
+            attack_keys (AttackKeys): the keys that controll the attack animations
+        """
+        super().attack(attack_keys["attack"], "sword_attack", "idling")
+
 
 
     def blit(self, canvas: Surface):
