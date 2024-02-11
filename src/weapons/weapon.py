@@ -24,8 +24,8 @@ class Weapon:
 
         self.hitbox: Hitbox = Hitbox(
             (0,0),
-            (5,0),
-            (2.5,50)
+            (0,5),
+            (50,2.5)
         )
         self.hitbox.set_pos(self.follow_line[0], 1)
 
@@ -38,8 +38,7 @@ class Weapon:
         if self.attachment is None:
             return
 
-        angle_compensation = 0 if direction == 1 else 90
-        angle = self.angle + angle_compensation + self.attachment.angle
+        angle = direction * self.angle + self.attachment.angle
         self.follow_line[1] = self.follow_line[0] + self.length * Vector2(
             cos(radians(angle)),
             sin(radians(angle)),
@@ -66,7 +65,7 @@ class Weapon:
 
         self.hitbox.set_pos(self.follow_line[1], -direction)
 
-        angle = self.angle + self.attachment.angle if direction == -1 else (self.angle - self.attachment.angle + 180) % 360
+        angle = direction * self.angle + self.attachment.angle
         self.hitbox.set_rotation(angle)
 
 

@@ -5,7 +5,7 @@ from pygame.draw import line
 from pygame import Vector2, Surface
 from numpy import array, matmul
 
-from utils import BoundingBox, _ccw
+from utils import BoundingBox
 
 
 class Hitbox:
@@ -21,7 +21,6 @@ class Hitbox:
         self.center /= len(lines)
 
         self.angle: float = 0
-        self.direction = 1
 
         self.relative_vectors = [
             [self.center - _line[0], self.center - _line[1]] for _line in lines
@@ -35,7 +34,6 @@ class Hitbox:
             direction (float): the direction that the hitbox must be rotating
         """
         self.center.update(pos)
-        self.direction = direction
 
     def set_rotation(self, angle: float):
         """Sets the rotation of the hitbox to a new value
@@ -54,7 +52,7 @@ class Hitbox:
         Returns:
             Vector2: the rotated point
         """
-        angle = self.direction * self.angle
+        angle = self.angle
         rotation_matrix = array(
             (
                 (cos(radians(angle)), -sin(radians(angle))),
