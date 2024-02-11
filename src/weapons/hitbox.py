@@ -26,7 +26,7 @@ class Hitbox:
             [self.center - _line[0], self.center - _line[1]] for _line in lines
         ]
 
-    def set_pos(self, pos: Vector2, direction: int):
+    def set_pos(self, pos: Vector2):
         """Sets the hitbox's center to a new position
 
         Args:
