@@ -26,6 +26,7 @@ else:
     LOGGING = config["logging"]
     WINDOW = config["window"]
     PHYSICS = config["physics"]
+    INPUT = config["input"]
     ENTITIES = config["entities"]
     ENEMIES = config["enemies"]
     ANIMATIONS = config["animations"]

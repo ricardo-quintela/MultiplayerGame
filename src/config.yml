@@ -11,6 +11,10 @@ physics:
   second: 1000
 
 
+input:
+  input_buffer_max_len: 3
+
+
 entities:
   max_vel_x: 10
   max_vel_y: 10

@@ -161,21 +161,26 @@ class SkeletonAnimated(Entity):
 
 
 
-    def attack(self, attack_condition: bool, attack_animation: str, idle_animation: str):
+    def attack(self, attack_condition: bool, idle_animation: str):
         """Changes the entity's state to an attack stance and
         updates the attack counter
 
         Args:
             attack_condition (bool): weather the entity can initiate an attack
+            idle_animation (str): the idle animation's name
         """
-        if attack_condition and not self.is_attacking:
-            self.is_attacking = True
-            self.attack_sequence += 1
-            self.change_animation_state(attack_animation)
+        if self.weapon is None:
+            return
 
         if self.is_attacking and self.finished_animation:
             self.is_attacking = False
             self.change_animation_state(idle_animation)
+
+        if attack_condition and not self.is_attacking:
+            self.is_attacking = True
+            self.attack_sequence = (self.attack_sequence + 1) % (len(self.weapon.attack_animations) + 1)
+            self.change_animation_state(self.weapon.attack_animations[self.attack_sequence - 1])
+
 
 
 

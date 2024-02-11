@@ -12,4 +12,6 @@ class Sword(Weapon):
         )
         self.hitbox.set_pos(self.follow_line[0])
 
-        self.attack_animation = "sword_attack"
+        self.attack_animations = [
+            "sword_attack"
+        ]

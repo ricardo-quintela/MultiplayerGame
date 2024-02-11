@@ -1,4 +1,4 @@
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 from math import cos, sin, radians
 
 from pygame import Vector2, Surface
@@ -19,7 +19,7 @@ class Weapon:
             Vector2(0,0)
         ]
 
-        self.attack_animation: str = None
+        self.attack_animations: List[str] = list()
 
         self.attachment: Bone = None
         self.calculate_b(1)

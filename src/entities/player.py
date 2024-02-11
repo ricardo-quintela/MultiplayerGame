@@ -72,7 +72,7 @@ class Player(SkeletonAnimated):
         Args:
             attack_keys (AttackKeys): the keys that controll the attack animations
         """
-        super().attack(attack_keys["attack"], "sword_attack", "idling")
+        super().attack(attack_keys["attack"], "idling")
 
 
 
