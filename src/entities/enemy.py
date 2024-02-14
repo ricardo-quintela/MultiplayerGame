@@ -62,7 +62,7 @@ class Enemy(SkeletonAnimated):
 
         collisions = super().update(colliders)
 
-        if self.check_on_platform(collisions["top"]):
+        if not self.is_stunned and self.check_on_platform(collisions["top"]):
             self.move()
         else:
             self.is_moving = False
@@ -91,14 +91,26 @@ class Enemy(SkeletonAnimated):
 
 
         #* taking damage
-        if player.is_attacking and player.weapon.hitbox is not None:
+        if player.is_attacking and player.weapon.hitbox is not None and player.weapon.validate_attack(player.current_keyframe, player.attack_sequence - 1):
             if self.hit_frame == -1 and player.weapon.hitbox.colliderect(self.bounding_box):
                 self.hit_frame = player.current_keyframe * player.attack_sequence
 
 
+        # hit reg
         if self.hit_frame > -1 and self.previous_hit_frame != self.hit_frame:
             self.previous_hit_frame = self.hit_frame
-            print("DANO")
+
+            # stun calculations
+            knockback_direction = 1 if self.distance_from_player > 0 else -1
+            knockback_direction = player.direction if self.distance_from_player == 0 else knockback_direction
+
+            self.stun(
+                Vector2(
+                    player.weapon.knockback_velocities[player.attack_sequence - 1].x * knockback_direction,
+                    player.weapon.knockback_velocities[player.attack_sequence - 1].y
+                ),
+                player.weapon.stun_durations[player.attack_sequence - 1]
+            )
 
 
         if not player.is_attacking:

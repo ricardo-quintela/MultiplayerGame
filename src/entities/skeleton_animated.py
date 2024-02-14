@@ -2,7 +2,7 @@ import logging
 from typing import Dict, List, Union
 from json import load
 
-from pygame import Surface
+from pygame import Surface, Vector2
 
 from config import ANIMATIONS
 from blocks import Collider
@@ -42,13 +42,17 @@ class SkeletonAnimated(Entity):
         # keyframe setup
         #* the keyframe updater makes the animation slower compared to the
         #* root update frequency
-        self.keyframe_updater: int = ANIMATION_FRAME_SKIP - 1
+        self.keyframe_updater: int = 0
         self.current_keyframe: int = 0
         self.current_animation: str = None
 
         self.animations: Dict[str, Animation] = dict()
         self.load_animations(animation_paths, scale)
         self.finished_animation: bool = False
+
+
+        # stun
+        self.stun_frames: int = 0
 
         # weapons
         self.weapon: Weapon = None
@@ -141,6 +145,11 @@ class SkeletonAnimated(Entity):
 
         if self.keyframe_updater == 0:
 
+            if self.stun_frames > 0:
+                self.stun_frames -= 1
+            else:
+                self.is_stunned = False
+
             self.current_keyframe += 1
             if self.current_keyframe == self.animations[animation_name].num_keyframes:
                 self.finished_animation = True
@@ -161,6 +170,21 @@ class SkeletonAnimated(Entity):
 
 
 
+    def stun(self, vel: Vector2, duration: int):
+        """Applies the stun effect that prevents the entity from moving
+
+        Args:
+            vel (Vector2): the kockback velocity
+            duration (int): the stun duration (in frames)
+        """
+        self.is_stunned = True
+
+        self.stun_frames = duration
+
+        self.vel.update(vel)
+
+
+
     def attack(self, attack_condition: bool, idle_animation: str):
         """Changes the entity's state to an attack stance and
         updates the attack counter
@@ -172,11 +196,11 @@ class SkeletonAnimated(Entity):
         if self.weapon is None:
             return
 
-        if self.is_attacking and self.finished_animation:
+        if (self.is_attacking and self.finished_animation) or self.is_stunned:
             self.is_attacking = False
             self.change_animation_state(idle_animation)
 
-        if attack_condition and not self.is_attacking:
+        if attack_condition and not self.is_attacking and not self.is_stunned:
             self.is_attacking = True
             self.attack_sequence = (self.attack_sequence + 1) % (len(self.weapon.attack_animations) + 1)
             self.change_animation_state(self.weapon.attack_animations[self.attack_sequence - 1])

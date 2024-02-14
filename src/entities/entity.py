@@ -39,6 +39,7 @@ class Entity:
         self.is_grounded: bool = False
         self.is_climbing: bool = False
         self.is_attacking: bool = False
+        self.is_stunned: bool = False
 
 
         # attacking and combos

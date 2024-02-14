@@ -24,7 +24,13 @@ class Weapon:
         self.attachment: Bone = None
         self._calculate_b(self.follow_line, self.angle, 1)
 
+        # damage calculations
         self.hitbox: Hitbox = None
+        self.valid_frames: List[List[int]] = list()
+
+        # stun calculations
+        self.stun_durations: List[int] = [0]
+        self.knockback_velocities: List[Vector2] = [Vector2(0,0)]
 
 
 
@@ -64,6 +70,20 @@ class Weapon:
 
         angle = direction * self.angle + self.attachment.angle
         self.hitbox.set_rotation(angle)
+
+
+    def validate_attack(self, keyframe: int, attack_sequence: int) -> bool:
+        """Returns true if the attack animation
+        is in a damage dealing phase
+
+        Args:
+            keyframe (int): the attack animation current keyframe
+            attack_sequence (int): the combo attack sequence being used
+
+        Returns:
+            bool: True if the attack is valid, False otherwise
+        """
+        return self.valid_frames[attack_sequence][0] <= keyframe <= self.valid_frames[attack_sequence][1]
 
 
 

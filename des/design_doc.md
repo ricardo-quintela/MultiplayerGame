@@ -51,7 +51,7 @@ As armas também poderão levar outras modificações para ficarem mais fortes
 
 - Golpes unarmerd
 - Golpes com diversas armas de melee
-
+- Projeteis
 
 ### Armas
 
@@ -61,6 +61,21 @@ As armas também poderão levar outras modificações para ficarem mais fortes
 - Machados
 
 ![modelo das armas](modelo_das_armas.png)
+
+
+#### Espada
+
+Terá um combo de ataques médios que atingirá o inimigo dando knockback, o último ataque dará mais knockback
+
+#### Arco
+
+Lançará setas durante a animação
+
+#### Soqueiras
+
+Terá um combo de ataques rápidos, mas que causam pouco dano
+
+
 
 ### Ataques
 
@@ -72,6 +87,16 @@ Assim que a hitbox da arma colidir com a bounding box de um inimigo **durante a 
 
 ![ataque](modelo_de_ataque.png)
 
+
+O objetivo é que apenas durante a animação de ataque os inimigos possam sofrer dano
+
+#### Atordoamento
+
+Cada ataque terá um valor de knockback que é aplicado ao inimigo assim que sofre dano
+
+Quando o knockback é aplicado o inimigo fica atordoado por **algum tempo**, dependendo do ataque
+
+Este tempo é medido em frames e impede que o inimigo se mova
 
 
 ---

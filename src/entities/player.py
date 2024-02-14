@@ -40,7 +40,7 @@ class Player(SkeletonAnimated):
         Args:
             movement_keys (dict): the movement keys that are being pressed
         """
-        if self.is_attacking:
+        if self.is_attacking or self.is_stunned:
             self.is_moving = False
             return
 
