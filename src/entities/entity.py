@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Union, Literal
+from typing import Dict, List, Union, Literal, Tuple
 from pygame import Surface, Vector2
 from pygame.draw import rect
 
@@ -56,7 +56,7 @@ class Entity:
         self.pos.update(pos)
 
 
-    def move(self, vel: tuple):
+    def move(self, vel: Tuple[int, int]):
         """Gives the entity a given velocity vector\n
 
         Args:

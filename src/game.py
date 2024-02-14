@@ -9,7 +9,7 @@ from events import GameEvents
 from utils import MovementKeys, AttackKeys
 
 from entities import Player
-from weapons import Sword
+from weapons import Sword, Bow
 
 from config import MAPS
 from maps import Map

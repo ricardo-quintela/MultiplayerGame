@@ -22,21 +22,21 @@ class Weapon:
         self.attack_animations: List[str] = list()
 
         self.attachment: Bone = None
-        self.calculate_b(1)
+        self._calculate_b(self.follow_line, self.angle, 1)
 
         self.hitbox: Hitbox = None
 
 
 
-    def calculate_b(self, direction: int):
+    def _calculate_b(self, _line: List[Vector2], angle: float, direction: int):
         """Calculates the b point based on the rotation angle
         and the length of the weapon
         """
         if self.attachment is None:
             return
 
-        angle = direction * self.angle + self.attachment.angle
-        self.follow_line[1] = self.follow_line[0] + self.length * Vector2(
+        angle = direction * angle + self.attachment.angle
+        _line[1] = _line[0] + self.length * Vector2(
             cos(radians(angle)),
             sin(radians(angle)),
         )
@@ -55,7 +55,7 @@ class Weapon:
     def update(self, direction: int):
         """Updates the weapon's hitbox
         """
-        self.calculate_b(direction)
+        self._calculate_b(self.follow_line, self.angle, direction)
 
         if self.hitbox is None:
             return

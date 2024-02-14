@@ -16,7 +16,8 @@ class Player(SkeletonAnimated):
 
         animations = dict()
         animations.update(ANIMATIONS["animation_paths"]["player"])
-        animations.update(ANIMATIONS["animation_paths"]["weapons"])
+        animations.update(ANIMATIONS["animation_paths"]["weapons"]["sword"])
+        animations.update(ANIMATIONS["animation_paths"]["weapons"]["bow"])
 
         super().__init__(
             bounding_box_size,

@@ -28,6 +28,10 @@ class Enemy(SkeletonAnimated):
         self.distance_from_player = 0
         self.distance_treshhold = distance_treshhold
 
+        # damage calculations
+        self.hit_frame = -1
+        self.previous_hit_frame = -1
+
 
     def move(self):
         if abs(self.distance_from_player) < self.distance_treshhold:
@@ -84,6 +88,21 @@ class Enemy(SkeletonAnimated):
 
             self.distance_from_player = self.pos.x - player.pos.x
             self.direction = -1 if self.distance_from_player > 0 else 1
+
+
+        #* taking damage
+        if player.is_attacking and player.weapon.hitbox is not None:
+            if self.hit_frame == -1 and player.weapon.hitbox.colliderect(self.bounding_box):
+                self.hit_frame = player.current_keyframe * player.attack_sequence
+
+
+        if self.hit_frame > -1 and self.previous_hit_frame != self.hit_frame:
+            self.previous_hit_frame = self.hit_frame
+            print("DANO")
+
+
+        if not player.is_attacking:
+            self.hit_frame = -1
 
 
 
